@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ammiraglio Caffè — menù digitale." />
+  <title>Ammiraglio Caffè — Menù</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=IM+Fell+English:ital@0;1&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --color-bg: #0d0305;
+      --color-burgundy: #5c0a1e;
+      --color-burgundy-dark: #3d0612;
+      --color-gold: #c9a84c;
+      --color-gold-bright: #e8c96a;
+      --color-gold-antique: #a8872a;
+      --color-cream: #f5ecd7;
+      --color-cream-dim: rgba(245, 236, 215, 0.72);
+      --color-cream-faint: rgba(245, 236, 215, 0.45);
+      --font-display: "Playfair Display", "Times New Roman", serif;
+      --font-sub: "Cormorant Garamond", Georgia, serif;
+      --font-body: "IM Fell English", "Libre Baskerville", Georgia, serif;
+      --container: 980px;
+      --nav-height: 64px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: var(--nav-height); }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      color: var(--color-cream);
+      background-color: var(--color-bg);
+      background-image:
+        radial-gradient(ellipse at top, rgba(92, 10, 30, 0.35) 0%, transparent 60%),
+        radial-gradient(ellipse at bottom, rgba(61, 6, 18, 0.4) 0%, transparent 65%),
+        repeating-linear-gradient(45deg, rgba(201, 168, 76, 0.015) 0px, rgba(201, 168, 76, 0.015) 1px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(-45deg, rgba(245, 236, 215, 0.012) 0px, rgba(245, 236, 215, 0.012) 1px, transparent 1px, transparent 4px);
+      background-attachment: fixed;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { color: var(--color-gold); text-decoration: none; transition: color 0.3s ease; }
+    a:hover { color: var(--color-gold-bright); }
+
+    /* NAV */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-height);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      transition: background-color 0.5s ease, border-color 0.5s ease, backdrop-filter 0.5s ease;
+    }
+    .nav--scrolled {
+      background-color: rgba(10, 3, 5, 0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(168, 135, 42, 0.35);
+    }
+    .nav__brand {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .nav--scrolled .nav__brand { opacity: 1; }
+    .nav__right { display: flex; align-items: center; gap: 0.75rem; }
+
+    .nav__list { list-style: none; margin: 0; padding: 0; display: flex; gap: 2rem; }
+    .nav__link {
+      position: relative;
+      font-family: var(--font-sub);
+      font-size: 0.85rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-cream);
+      padding: 0.4rem 0;
+      cursor: pointer;
+    }
+    .nav__link::after {
+      content: ""; position: absolute; left: 0; bottom: 0;
+      width: 0; height: 1px; background: var(--color-gold);
+      transition: width 0.4s ease;
+    }
+    .nav__link:hover { color: var(--color-gold-bright); }
+    .nav__link:hover::after { width: 100%; }
+
+    /* Language switcher — SVG flags, NO emoji */
+    .lang { display: inline-flex; align-items: center; gap: 0.25rem; }
+    .lang__btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      padding: 2px;
+      cursor: pointer;
+      line-height: 0;
+      opacity: 0.5;
+      transition: opacity 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    }
+    .lang__btn:hover { opacity: 1; transform: translateY(-1px); }
+    .lang__btn:focus-visible { outline: 2px solid var(--color-gold-bright); outline-offset: 2px; }
+    .lang__btn.is-active { opacity: 1; border-color: var(--color-gold-antique); }
+    .lang__btn svg {
+      display: block;
+      width: 24px;
+      height: 16px;
+      border-radius: 2px;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav__toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--color-gold-antique);
+      color: var(--color-gold);
+      width: 42px; height: 36px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      border-radius: 2px;
+    }
+    .nav__toggle:focus-visible { outline: 2px solid var(--color-gold-bright); outline-offset: 2px; }
+
+    /* HERO */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: var(--nav-height) 1.5rem 0;
+    }
+    .hero__logo {
+      width: clamp(320px, 70vw, 560px);
+      height: auto;
+      filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.6));
+      opacity: 0;
+      transform: scale(0.95);
+      animation: heroLogoIn 1.4s ease 0.1s forwards;
+    }
+    @keyframes heroLogoIn { to { opacity: 1; transform: scale(1); } }
+
+    /* DIVIDERS */
+    .divider {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1rem; margin: 3rem auto; max-width: 480px;
+      color: var(--color-gold); opacity: 0.85;
+    }
+    .divider::before, .divider::after {
+      content: ""; flex: 1; height: 1px;
+      background: linear-gradient(to right, transparent, var(--color-gold-antique) 50%, transparent);
+    }
+    .divider__glyph { font-size: 1.1rem; letter-spacing: 0.6em; padding-left: 0.6em; }
+
+    /* MENU */
+    .menu { max-width: var(--container); margin: 0 auto; padding: 0 1.5rem 4rem; }
+    .section { padding: 0 0 0.5rem; scroll-margin-top: var(--nav-height); }
+    .section + .section { margin-top: 2rem; }
+    .section__header {
+      text-align: center;
+      margin-bottom: 1rem;
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .section__header.is-visible { opacity: 1; transform: translateX(0); }
+    .section__title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      font-weight: 600;
+      color: var(--color-cream);
+      margin: 0;
+      letter-spacing: 0.02em;
+    }
+    .section__note {
+      font-family: var(--font-sub);
+      font-style: italic;
+      color: var(--color-cream-faint);
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+
+    .items { list-style: none; margin: 0; padding: 0; }
+    .item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem 1.5rem;
+      padding: 1.1rem 0;
+      border-bottom: 1px dotted rgba(168, 135, 42, 0.28);
+    }
+    .item--no-border { border-bottom: none; }
+    .item__body { min-width: 0; }
+    .item__name {
+      font-family: var(--font-display);
+      font-size: 1.18rem;
+      font-weight: 600;
+      color: var(--color-cream);
+      margin: 0;
+      letter-spacing: 0.01em;
+    }
+    .item__desc {
+      font-family: var(--font-sub);
+      font-style: italic;
+      font-size: 0.98rem;
+      color: var(--color-cream-dim);
+      margin: 0.25rem 0 0;
+    }
+    .item__price {
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      color: var(--color-gold);
+      white-space: nowrap;
+      align-self: start;
+      padding-top: 0.15rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ALLERGENS */
+    .allergens { display: inline-flex; gap: 0.35rem; margin-left: 0.5rem; vertical-align: middle; }
+    .allergen {
+      display: inline-block; width: 9px; height: 9px;
+      border-radius: 50%; vertical-align: middle;
+      border: 1px solid rgba(245, 236, 215, 0.25);
+    }
+    .allergen--gluten  { background: #c9a84c; }
+    .allergen--milk    { background: #f5ecd7; }
+    .allergen--alcohol { background: #8b0a1a; }
+    .allergen--nuts    { background: #7a4a1f; }
+
+    .legend {
+      max-width: var(--container);
+      margin: 0.25rem auto 0;
+      padding: 0.25rem 1.5rem 0;
+      font-family: var(--font-sub);
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--color-cream-faint);
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+    .legend .allergen { margin-right: 0.3rem; }
+    .legend span { margin: 0 0.6rem; white-space: nowrap; }
+
+    /* FOOTER */
+    .footer {
+      margin-top: 2rem;
+      padding: 3rem 1.5rem 2.5rem;
+      text-align: center;
+      background: linear-gradient(to bottom, transparent, rgba(61, 6, 18, 0.45));
+      border-top: 1px solid rgba(168, 135, 42, 0.2);
+    }
+    .footer__mark {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.4rem;
+      color: var(--color-gold);
+      margin: 0 0 0.4rem;
+      letter-spacing: 0.05em;
+    }
+    .footer__tagline {
+      font-family: var(--font-sub);
+      font-size: 0.8rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--color-gold-antique);
+      margin: 0 0 1.5rem;
+    }
+    .footer__social { display: flex; justify-content: center; gap: 1.2rem; margin-bottom: 1.5rem; }
+    .footer__social a {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 42px; height: 42px;
+      border: 1px solid var(--color-gold-antique);
+      border-radius: 50%;
+      color: var(--color-gold);
+      transition: all 0.3s ease;
+    }
+    .footer__social a:hover {
+      background: var(--color-gold);
+      color: var(--color-bg);
+      transform: translateY(-2px);
+    }
+    .footer__social svg { width: 18px; height: 18px; }
+    .footer__meta {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--color-cream-faint);
+      margin: 0;
+      letter-spacing: 0.05em;
+    }
+
+    @media (max-width: 768px) {
+      .nav { padding: 0 1.2rem; }
+      .nav__toggle { display: inline-flex; align-items: center; justify-content: center; }
+      .nav__list {
+        position: absolute;
+        top: var(--nav-height);
+        left: 0; right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: rgba(10, 3, 5, 0.98);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(168, 135, 42, 0.35);
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+      }
+      .nav__list.is-open { max-height: 80vh; overflow-y: auto; }
+      .nav__list li { border-bottom: 1px solid rgba(168, 135, 42, 0.12); }
+      .nav__list li:last-child { border-bottom: none; }
+      .nav__link { display: block; padding: 1rem 1.5rem; font-size: 0.9rem; }
+      .nav__link::after { display: none; }
+      .nav__brand { opacity: 1; font-size: 0.95rem; }
+      .item { padding: 1rem 0; }
+    }
+    @media (max-width: 480px) {
+      .item { grid-template-columns: 1fr; gap: 0.4rem; }
+      .item__price { align-self: start; padding-top: 0; }
+      .divider { margin: 2rem auto; }
+      .lang__btn svg { width: 22px; height: 14px; }
+    }
+
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      .nav, .footer, .nav__toggle, .lang { display: none !important; }
+      .hero { padding: 1rem 0; }
+      .hero__logo { width: 140px; filter: none; }
+      .section__title, .item__name, .item__price { color: #000 !important; }
+      .item__desc { color: #333 !important; }
+      .section__header { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav" id="nav" aria-label="Navigation">
+    <span class="nav__brand">Ammiraglio Caffè</span>
+
+    <div class="nav__right">
+      <div class="lang" id="lang" role="group" aria-label="Language"></div>
+      <button class="nav__toggle" id="navToggle" aria-controls="navList" aria-expanded="false" aria-label="Menu">☰</button>
+    </div>
+
+    <ul class="nav__list" id="navList"></ul>
+  </nav>
+
+  <header class="hero">
+    <img class="hero__logo" src="./logo-ammiraglio.png" alt="Ammiraglio Caffè" />
+  </header>
+
+  <main class="menu" id="menu">
+    <p class="legend" id="legend" aria-label="Allergens"></p>
+    <div id="sections"></div>
+  </main>
+
+  <footer class="footer">
+    <div class="divider" aria-hidden="true"><span class="divider__glyph">✦ ❖ ✦</span></div>
+    <p class="footer__mark">Ammiraglio Caffè</p>
+    <p class="footer__tagline">Since 2026</p>
+    <div class="footer__social" aria-label="Social">
+      <a href="https://instagram.com/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="5" ry="5"></rect>
+          <circle cx="12" cy="12" r="4"></circle>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle>
+        </svg>
+      </a>
+      <a href="https://wa.me/" aria-label="WhatsApp" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M19.11 4.91A9.82 9.82 0 0 0 12.05 2C6.6 2 2.16 6.44 2.16 11.89c0 1.74.46 3.44 1.32 4.94L2.08 22l5.31-1.39a9.86 9.86 0 0 0 4.66 1.19h.01c5.45 0 9.89-4.44 9.89-9.89 0-2.64-1.03-5.13-2.84-7Zm-7.06 15.21h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.15.83.84-3.07-.2-.31a8.18 8.18 0 0 1-1.26-4.35c0-4.53 3.69-8.22 8.23-8.22 2.2 0 4.26.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.53-3.69 8.21-8.2 8.21Zm4.5-6.15c-.25-.12-1.46-.72-1.69-.8-.23-.08-.39-.12-.56.12s-.64.8-.78.96c-.14.17-.29.19-.53.06-.25-.12-1.04-.38-1.98-1.22-.73-.65-1.22-1.46-1.37-1.71-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.84-.86 2.05s.88 2.38 1 2.55c.12.17 1.73 2.63 4.19 3.69.58.25 1.04.4 1.4.51.59.19 1.13.16 1.55.1.47-.07 1.46-.6 1.67-1.18.21-.58.21-1.08.14-1.18-.06-.1-.22-.16-.46-.28Z"/>
+        </svg>
+      </a>
+    </div>
+    <p class="footer__meta" id="footerMeta"></p>
+  </footer>
+
+  <script>
+  (function () {
+    'use strict';
+
+    // ====================================================================
+    // UI STRINGS (per lingua)
+    // ====================================================================
+    const UI = {
+      it: { title: 'Ammiraglio Caffè — Menù', menuLabel: 'Apri menù', langLabel: 'Lingua', allergenLegend: 'Legenda allergeni', gluten: 'Glutine', milk: 'Latte', nuts: 'Frutta a guscio', alcohol: 'Alcol', social: 'Profili social', copyright: '© 2026 Ammiraglio Caffè — Tutti i diritti riservati', logoAlt: 'Stemma Ammiraglio Caffè' },
+      en: { title: 'Ammiraglio Caffè — Menu',  menuLabel: 'Open menu',  langLabel: 'Language', allergenLegend: 'Allergen legend', gluten: 'Gluten', milk: 'Milk', nuts: 'Tree nuts', alcohol: 'Alcohol', social: 'Social profiles', copyright: '© 2026 Ammiraglio Caffè — All rights reserved', logoAlt: 'Ammiraglio Caffè crest' },
+      es: { title: 'Ammiraglio Caffè — Menú',  menuLabel: 'Abrir menú', langLabel: 'Idioma',  allergenLegend: 'Leyenda de alérgenos', gluten: 'Gluten', milk: 'Leche', nuts: 'Frutos secos', alcohol: 'Alcohol', social: 'Redes sociales', copyright: '© 2026 Ammiraglio Caffè — Todos los derechos reservados', logoAlt: 'Escudo Ammiraglio Caffè' },
+      fr: { title: 'Ammiraglio Caffè — Menu',  menuLabel: 'Ouvrir le menu', langLabel: 'Langue', allergenLegend: 'Légende des allergènes', gluten: 'Gluten', milk: 'Lait', nuts: 'Fruits à coque', alcohol: 'Alcool', social: 'Réseaux sociaux', copyright: '© 2026 Ammiraglio Caffè — Tous droits réservés', logoAlt: 'Emblème Ammiraglio Caffè' },
+      de: { title: 'Ammiraglio Caffè — Speisekarte', menuLabel: 'Menü öffnen', langLabel: 'Sprache', allergenLegend: 'Allergen-Legende', gluten: 'Gluten', milk: 'Milch', nuts: 'Schalenfrüchte', alcohol: 'Alkohol', social: 'Soziale Profile', copyright: '© 2026 Ammiraglio Caffè — Alle Rechte vorbehalten', logoAlt: 'Ammiraglio Caffè Wappen' },
+      ru: { title: 'Ammiraglio Caffè — Меню', menuLabel: 'Открыть меню', langLabel: 'Язык', allergenLegend: 'Список аллергенов', gluten: 'Глютен', milk: 'Молоко', nuts: 'Орехи', alcohol: 'Алкоголь', social: 'Социальные сети', copyright: '© 2026 Ammiraglio Caffè — Все права защищены', logoAlt: 'Герб Ammiraglio Caffè' }
+    };
+
+    // ====================================================================
+    // FLAGS — SVG inline (rendering garantito su qualsiasi sistema)
+    // ====================================================================
+    const FLAGS = {
+      it: '<svg viewBox="0 0 6 4" xmlns="http://www.w3.org/2000/svg"><rect width="2" height="4" fill="#009246"/><rect x="2" width="2" height="4" fill="#fff"/><rect x="4" width="2" height="4" fill="#ce2b37"/></svg>',
+      en: '<svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg"><clipPath id="t"><path d="M30,15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0,0v30h60V0z" fill="#012169"/><path d="M0,0 60,30M60,0 0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 60,30M60,0 0,30" clip-path="url(#t)" stroke="#C8102E" stroke-width="4"/><path d="M30,0v30M0,15h60" stroke="#fff" stroke-width="10"/><path d="M30,0v30M0,15h60" stroke="#C8102E" stroke-width="6"/></svg>',
+      es: '<svg viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg"><rect width="3" height="2" fill="#AA151B"/><rect y="0.5" width="3" height="1" fill="#F1BF00"/></svg>',
+      fr: '<svg viewBox="0 0 3 2" xmlns="http://www.w3.org/2000/svg"><rect width="1" height="2" fill="#0055A4"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#EF4135"/></svg>',
+      de: '<svg viewBox="0 0 5 3" xmlns="http://www.w3.org/2000/svg"><rect width="5" height="1" fill="#000"/><rect y="1" width="5" height="1" fill="#DD0000"/><rect y="2" width="5" height="1" fill="#FFCE00"/></svg>',
+      ru: '<svg viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="6" fill="#fff"/><rect y="2" width="9" height="2" fill="#0039A6"/><rect y="4" width="9" height="2" fill="#D52B1E"/></svg>'
+    };
+
+    const LANGS = ['it', 'en', 'es', 'fr', 'de', 'ru'];
+
+    // ====================================================================
+    // MENU DATA — modello multilingua
+    // ====================================================================
+    // a = allergens: g=gluten, m=milk, n=nuts, A=alcohol
+    const MENU = {
+      sections: [
+        {
+          id: 'caffetteria',
+          name: { it: 'Caffetteria', en: 'Coffee', es: 'Cafetería', fr: 'Caféterie', de: 'Kaffee', ru: 'Кофе' },
+          note: {
+            it: "L'arte dell'espresso, miscela d'autore.",
+            en: 'The art of espresso, signature blend.',
+            es: 'El arte del espresso, mezcla de autor.',
+            fr: "L'art de l'espresso, mélange signature.",
+            de: 'Die Kunst des Espresso, signature Mischung.',
+            ru: 'Искусство эспрессо, фирменная смесь.'
+          },
+          items: [
+            { price: '€1,30',
+              name: { it: 'Espresso', en: 'Espresso', es: 'Espresso', fr: 'Espresso', de: 'Espresso', ru: 'Эспрессо' },
+              desc: { it: 'Miscela di casa, tostatura napoletana.', en: 'House blend, Neapolitan roast.', es: 'Mezcla de la casa, tueste napolitano.', fr: 'Mélange maison, torréfaction napolitaine.', de: 'Hausmischung, neapolitanische Röstung.', ru: 'Фирменная смесь, неаполитанская обжарка.' } },
+            { price: '€1,50', a: ['m'],
+              name: { it: 'Caffè Macchiato', en: 'Macchiato', es: 'Café Macchiato', fr: 'Café Macchiato', de: 'Caffè Macchiato', ru: 'Кофе макиато' },
+              desc: { it: 'Espresso macchiato con schiuma di latte fresco.', en: 'Espresso topped with fresh milk foam.', es: 'Espresso con espuma de leche fresca.', fr: 'Espresso avec mousse de lait frais.', de: 'Espresso mit frischem Milchschaum.', ru: 'Эспрессо с пенкой свежего молока.' } },
+            { price: '€1,80', a: ['m'],
+              name: { it: 'Cappuccino', en: 'Cappuccino', es: 'Capuchino', fr: 'Cappuccino', de: 'Cappuccino', ru: 'Капучино' },
+              desc: { it: 'Crema vellutata di latte, cacao a richiesta.', en: 'Velvety milk foam, cocoa on request.', es: 'Espuma de leche aterciopelada, cacao a petición.', fr: 'Mousse de lait veloutée, cacao sur demande.', de: 'Samtiger Milchschaum, Kakao auf Wunsch.', ru: 'Бархатная молочная пенка, какао по желанию.' } },
+            { price: '€1,60',
+              name: { it: "Caffè d'Orzo", en: 'Barley Coffee', es: 'Café de Cebada', fr: "Café d'Orge", de: 'Gerstenkaffee', ru: 'Ячменный кофе' },
+              desc: { it: 'Orzo tostato, naturalmente senza caffeina.', en: 'Roasted barley, naturally caffeine-free.', es: 'Cebada tostada, naturalmente sin cafeína.', fr: 'Orge torréfié, naturellement sans caféine.', de: 'Geröstete Gerste, von Natur aus koffeinfrei.', ru: 'Жареный ячмень, без кофеина.' } },
+            { price: '€2,20', a: ['m'],
+              name: { it: "Marocchino dell'Ammiraglio", en: "Admiral's Marocchino", es: 'Marocchino del Almirante', fr: "Marocchino de l'Amiral", de: 'Marocchino des Admirals', ru: 'Мароккино Адмирала' },
+              desc: { it: 'Espresso, cacao amaro, crema di latte e scaglie di cioccolato fondente.', en: 'Espresso, bitter cocoa, milk cream and dark chocolate shavings.', es: 'Espresso, cacao amargo, crema de leche y virutas de chocolate negro.', fr: 'Espresso, cacao amer, crème de lait et copeaux de chocolat noir.', de: 'Espresso, bittere Kakao, Milchcreme und dunkle Schokoladenraspeln.', ru: 'Эспрессо, какао, молочный крем и стружка тёмного шоколада.' } },
+            { price: '€3,00',
+              name: { it: 'Caffè Shakerato', en: 'Iced Shakerato', es: 'Café Shakerato', fr: 'Café Shakerato', de: 'Caffè Shakerato', ru: 'Шейкерато' },
+              desc: { it: 'Espresso shakerato con ghiaccio, lievemente zuccherato.', en: 'Espresso shaken with ice, lightly sweetened.', es: 'Espresso agitado con hielo, ligeramente azucarado.', fr: 'Espresso secoué avec glace, légèrement sucré.', de: 'Espresso mit Eis geschüttelt, leicht gesüßt.', ru: 'Эспрессо со льдом, слегка подслащённый.' } },
+            { price: '€2,50', a: ['A'],
+              name: { it: 'Caffè Corretto', en: 'Corrected Coffee', es: 'Café Corregido', fr: 'Café Corretto', de: 'Caffè Corretto', ru: 'Кофе Корретто' },
+              desc: { it: 'Espresso con sambuca, grappa o cognac a scelta.', en: 'Espresso with sambuca, grappa or cognac of choice.', es: 'Espresso con sambuca, grappa o coñac a elegir.', fr: 'Espresso avec sambuca, grappa ou cognac au choix.', de: 'Espresso mit Sambuca, Grappa oder Cognac nach Wahl.', ru: 'Эспрессо с самбукой, граппой или коньяком.' } },
+            { price: '€3,80', a: ['m'],
+              name: { it: 'Cioccolata Calda', en: 'Hot Chocolate', es: 'Chocolate Caliente', fr: 'Chocolat Chaud', de: 'Heiße Schokolade', ru: 'Горячий шоколад' },
+              desc: { it: 'Cioccolato fondente fuso, panna montata.', en: 'Melted dark chocolate, whipped cream.', es: 'Chocolate negro fundido, nata montada.', fr: 'Chocolat noir fondu, crème fouettée.', de: 'Geschmolzene dunkle Schokolade, Schlagsahne.', ru: 'Тёмный шоколад, взбитые сливки.' } }
+          ]
+        },
+        {
+          id: 'colazione',
+          name: { it: 'Colazione', en: 'Breakfast', es: 'Desayuno', fr: 'Petit-déjeuner', de: 'Frühstück', ru: 'Завтрак' },
+          note: { it: 'Servita dalle 10:00 alle 12:00.', en: 'Served from 10:00 to 12:00.', es: 'Servido de 10:00 a 12:00.', fr: 'Servi de 10h à 12h.', de: 'Serviert von 10:00 bis 12:00.', ru: 'Подаётся с 10:00 до 12:00.' },
+          items: [
+            { price: '€1,80', a: ['g','m'],
+              name: { it: 'Cornetto Classico', en: 'Classic Cornetto', es: 'Cornetto Clásico', fr: 'Cornetto Classique', de: 'Klassisches Cornetto', ru: 'Классический корнетто' },
+              desc: { it: 'Sfoglia artigianale, semplice, alla crema o al cioccolato.', en: 'Artisan pastry — plain, cream or chocolate filling.', es: 'Hojaldre artesanal, simple, crema o chocolate.', fr: 'Pâte feuilletée artisanale, nature, crème ou chocolat.', de: 'Handgemachter Blätterteig, natur, Creme oder Schokolade.', ru: 'Слойка с кремом или шоколадом.' } },
+            { price: '€2,80', a: ['g','m'],
+              name: { it: 'Sfogliatella Napoletana', en: 'Neapolitan Sfogliatella', es: 'Sfogliatella Napolitana', fr: 'Sfogliatella Napolitaine', de: 'Neapolitanische Sfogliatella', ru: 'Неаполитанская сфольятелла' },
+              desc: { it: "Riccia, ripieno di ricotta e canditi d'arancia.", en: 'Crispy shell with ricotta and candied orange.', es: 'Crujiente, relleno de ricotta y naranja confitada.', fr: 'Croustillante, garnie de ricotta et orange confite.', de: 'Knusprig, gefüllt mit Ricotta und kandierten Orangen.', ru: 'Хрустящая, с рикоттой и цукатами апельсина.' } },
+            { price: '€3,50', a: ['g','m'],
+              name: { it: 'Maritozzo con la Panna', en: 'Maritozzo with Cream', es: 'Maritozzo con Nata', fr: 'Maritozzo à la Crème', de: 'Maritozzo mit Sahne', ru: 'Маритоццо со сливками' },
+              desc: { it: 'Pasta dolce romana, generosa crema di panna fresca.', en: 'Roman sweet bun, generous fresh whipped cream.', es: 'Bollo dulce romano, generosa nata fresca.', fr: 'Brioche douce romaine, généreuse crème fraîche.', de: 'Römisches süßes Brötchen, großzügige frische Sahne.', ru: 'Римская сладкая булочка с свежими сливками.' } },
+            { price: '€4,00', a: ['g','m'],
+              name: { it: 'Toast Prosciutto e Formaggio', en: 'Ham & Cheese Toast', es: 'Tostada Jamón y Queso', fr: 'Toast Jambon-Fromage', de: 'Schinken-Käse-Toast', ru: 'Тост с ветчиной и сыром' },
+              desc: { it: 'Pane in cassetta, prosciutto cotto, mozzarella filante.', en: 'Sandwich bread, cooked ham, melted mozzarella.', es: 'Pan de molde, jamón cocido, mozzarella fundida.', fr: 'Pain de mie, jambon cuit, mozzarella fondue.', de: 'Toastbrot, gekochter Schinken, geschmolzener Mozzarella.', ru: 'Тостовый хлеб, варёная ветчина, расплавленная моцарелла.' } },
+            { price: '€5,50', a: ['m','n'],
+              name: { it: 'Yogurt, Frutta e Granola', en: 'Yogurt, Fruit & Granola', es: 'Yogur, Fruta y Granola', fr: 'Yaourt, Fruits et Granola', de: 'Joghurt, Obst und Granola', ru: 'Йогурт, фрукты и гранола' },
+              desc: { it: 'Yogurt bianco intero, frutta di stagione, granola tostata al miele.', en: 'Whole white yogurt, seasonal fruit, honey-roasted granola.', es: 'Yogur blanco entero, fruta de temporada, granola con miel.', fr: 'Yaourt blanc entier, fruits de saison, granola au miel.', de: 'Weißer Vollmilchjoghurt, saisonales Obst, Honig-Granola.', ru: 'Белый йогурт, сезонные фрукты, гранола с мёдом.' } },
+            { price: '€3,50',
+              name: { it: "Spremuta d'Arancia", en: 'Fresh Orange Juice', es: 'Zumo de Naranja', fr: "Jus d'Orange Frais", de: 'Frisch gepresster Orangensaft', ru: 'Свежевыжатый апельсиновый сок' },
+              desc: { it: 'Arance siciliane, spremute al momento.', en: 'Sicilian oranges, squeezed to order.', es: 'Naranjas sicilianas, recién exprimidas.', fr: 'Oranges siciliennes, pressées à la demande.', de: 'Sizilianische Orangen, frisch gepresst.', ru: 'Сицилийские апельсины, свежевыжатые.' } }
+          ]
+        },
+        {
+          id: 'analcoliche',
+          name: { it: 'Bevande Analcoliche', en: 'Soft Drinks', es: 'Bebidas sin Alcohol', fr: 'Boissons sans Alcool', de: 'Alkoholfreie Getränke', ru: 'Безалкогольные напитки' },
+          note: { it: "Dissetanti d'ogni stagione.", en: 'Refreshments for every season.', es: 'Refrescos para toda estación.', fr: 'Rafraîchissements pour toute saison.', de: 'Erfrischungen für jede Jahreszeit.', ru: 'Освежающие напитки на любой сезон.' },
+          items: [
+            { price: '€2,50',
+              name: { it: 'Acqua Naturale o Frizzante', en: 'Still or Sparkling Water', es: 'Agua Natural o con Gas', fr: 'Eau Plate ou Gazeuse', de: 'Stilles oder Sprudelwasser', ru: 'Вода негазированная или газированная' },
+              desc: { it: 'Bottiglia 0,75 L, servita in vetro.', en: '0.75 L bottle, served in glass.', es: 'Botella 0,75 L, servida en vidrio.', fr: 'Bouteille 0,75 L, servie en verre.', de: '0,75 L Flasche, im Glas serviert.', ru: 'Бутылка 0,75 л, подаётся в стекле.' } },
+            { price: '€3,50',
+              name: { it: 'Coca-Cola', en: 'Coca-Cola', es: 'Coca-Cola', fr: 'Coca-Cola', de: 'Coca-Cola', ru: 'Кока-Кола' },
+              desc: { it: 'In vetro 33 cl, ben ghiacciata.', en: '33 cl glass bottle, well chilled.', es: 'Botella de vidrio 33 cl, bien fría.', fr: 'Bouteille verre 33 cl, bien glacée.', de: '33 cl Glasflasche, gut gekühlt.', ru: 'Стеклянная бутылка 33 cl, охлаждённая.' } },
+            { price: '€3,50',
+              name: { it: 'Chinotto', en: 'Chinotto', es: 'Chinotto', fr: 'Chinotto', de: 'Chinotto', ru: 'Кинотто' },
+              desc: { it: "Amaro-agrumato, l'aperitivo dell'infanzia.", en: 'Bitter-citrus, the aperitif of childhood.', es: 'Amargo-cítrico, el aperitivo de la infancia.', fr: "Amer-agrume, l'apéritif de l'enfance.", de: 'Bitter-zitronig, das Aperitif der Kindheit.', ru: 'Горько-цитрусовый, аперитив детства.' } },
+            { price: '€4,00',
+              name: { it: 'Tonica Mediterranea', en: 'Mediterranean Tonic', es: 'Tónica Mediterránea', fr: 'Tonique Méditerranéen', de: 'Mediterranes Tonic', ru: 'Средиземноморский тоник' },
+              desc: { it: "Con bergamotto e scorza di limone d'Amalfi.", en: 'With bergamot and Amalfi lemon peel.', es: 'Con bergamota y piel de limón de Amalfi.', fr: "Avec bergamote et zeste de citron d'Amalfi.", de: 'Mit Bergamotte und Amalfi-Zitronenschale.', ru: 'С бергамотом и цедрой амальфитанского лимона.' } },
+            { price: '€4,50',
+              name: { it: 'Limonata Artigianale', en: 'Artisan Lemonade', es: 'Limonada Artesanal', fr: 'Limonade Artisanale', de: 'Hausgemachte Limonade', ru: 'Домашний лимонад' },
+              desc: { it: 'Limoni di Sorrento, zucchero di canna, menta fresca.', en: 'Sorrento lemons, cane sugar, fresh mint.', es: 'Limones de Sorrento, azúcar de caña, menta fresca.', fr: 'Citrons de Sorrente, sucre de canne, menthe fraîche.', de: 'Sorrento-Zitronen, Rohrzucker, frische Minze.', ru: 'Лимоны Сорренто, тростниковый сахар, мята.' } },
+            { price: '€3,80',
+              name: { it: 'Tè Freddo della Casa', en: 'House Iced Tea', es: 'Té Helado de la Casa', fr: 'Thé Glacé Maison', de: 'Hausgemachter Eistee', ru: 'Холодный чай' },
+              desc: { it: 'Pesca bianca o limone, infuso a freddo.', en: 'White peach or lemon, cold-brewed.', es: 'Melocotón blanco o limón, infusión en frío.', fr: 'Pêche blanche ou citron, infusion à froid.', de: 'Weißer Pfirsich oder Zitrone, kalt gebrüht.', ru: 'Белый персик или лимон, холодное заваривание.' } }
+          ]
+        },
+        {
+          id: 'aperitivi',
+          name: { it: 'Aperitivi & Cocktail', en: 'Aperitifs & Cocktails', es: 'Aperitivos y Cócteles', fr: 'Apéritifs et Cocktails', de: 'Aperitifs & Cocktails', ru: 'Аперитивы и коктейли' },
+          note: { it: "L'ora del tramonto, servita con cura.", en: 'Sunset hour, served with care.', es: 'La hora del atardecer, servida con esmero.', fr: "L'heure du coucher du soleil, servie avec soin.", de: 'Sonnenuntergang, mit Sorgfalt serviert.', ru: 'Час заката, поданный с заботой.' },
+          items: [
+            { price: '€7,00', a: ['A'],
+              name: { it: 'Spritz Aperol', en: 'Aperol Spritz', es: 'Spritz Aperol', fr: 'Spritz Aperol', de: 'Aperol Spritz', ru: 'Шприц Апероль' },
+              desc: { it: "Prosecco, Aperol, soda e fetta d'arancia.", en: 'Prosecco, Aperol, soda and orange slice.', es: 'Prosecco, Aperol, soda y rodaja de naranja.', fr: "Prosecco, Aperol, soda et tranche d'orange.", de: 'Prosecco, Aperol, Soda und Orangenscheibe.', ru: 'Просекко, Апероль, содовая и долька апельсина.' } },
+            { price: '€7,50', a: ['A'],
+              name: { it: 'Spritz Campari', en: 'Campari Spritz', es: 'Spritz Campari', fr: 'Spritz Campari', de: 'Campari Spritz', ru: 'Шприц Кампари' },
+              desc: { it: 'Più asciutto, più amaro, decisamente milanese.', en: 'Drier, more bitter — distinctly Milanese.', es: 'Más seco, más amargo, claramente milanés.', fr: 'Plus sec, plus amer, résolument milanais.', de: 'Trockener, bitterer — typisch mailändisch.', ru: 'Суше, горче — настоящий миланский.' } },
+            { price: '€9,00', a: ['A'],
+              name: { it: 'Negroni', en: 'Negroni', es: 'Negroni', fr: 'Negroni', de: 'Negroni', ru: 'Негрони' },
+              desc: { it: "Gin, Campari, vermouth rosso, scorza d'arancia.", en: 'Gin, Campari, red vermouth, orange peel.', es: 'Ginebra, Campari, vermut rojo, piel de naranja.', fr: "Gin, Campari, vermouth rouge, zeste d'orange.", de: 'Gin, Campari, roter Vermouth, Orangenschale.', ru: 'Джин, Кампари, красный вермут, цедра апельсина.' } },
+            { price: '€8,50', a: ['A'],
+              name: { it: 'Negroni Sbagliato', en: 'Negroni Sbagliato', es: 'Negroni Sbagliato', fr: 'Negroni Sbagliato', de: 'Negroni Sbagliato', ru: 'Негрони Сбальято' },
+              desc: { it: 'Lo "sbaglio" felice: prosecco al posto del gin.', en: 'The happy "mistake": prosecco instead of gin.', es: 'El "error" feliz: prosecco en lugar de ginebra.', fr: "L'heureuse \"erreur\" : prosecco au lieu de gin.", de: 'Der glückliche "Fehler": Prosecco statt Gin.', ru: '"Ошибка" счастья: просекко вместо джина.' } },
+            { price: '€7,50', a: ['A'],
+              name: { it: 'Americano', en: 'Americano', es: 'Americano', fr: 'Americano', de: 'Americano', ru: 'Американо' },
+              desc: { it: 'Campari, vermouth rosso, soda. Classico inossidabile.', en: 'Campari, red vermouth, soda. A timeless classic.', es: 'Campari, vermut rojo, soda. Clásico inmortal.', fr: 'Campari, vermouth rouge, soda. Un classique intemporel.', de: 'Campari, roter Vermouth, Soda. Ein zeitloser Klassiker.', ru: 'Кампари, красный вермут, содовая. Бессмертная классика.' } },
+            { price: '€7,00', a: ['A'],
+              name: { it: 'Hugo', en: 'Hugo', es: 'Hugo', fr: 'Hugo', de: 'Hugo', ru: 'Хьюго' },
+              desc: { it: 'Prosecco, sciroppo di fiori di sambuco, menta, lime.', en: 'Prosecco, elderflower syrup, mint, lime.', es: 'Prosecco, sirope de saúco, menta, lima.', fr: 'Prosecco, sirop de sureau, menthe, citron vert.', de: 'Prosecco, Holundersirup, Minze, Limette.', ru: 'Просекко, сироп бузины, мята, лайм.' } },
+            { price: '€11,00', a: ['A'],
+              name: { it: "Ammiraglio's Signature", en: "Ammiraglio's Signature", es: 'Firma del Almirante', fr: "Signature de l'Amiral", de: 'Admirals-Signature', ru: 'Авторский Адмирал' },
+              desc: { it: 'Vermouth invecchiato, gin mediterraneo, bitter agli agrumi, oliva taggiasca.', en: 'Aged vermouth, Mediterranean gin, citrus bitter, Taggiasca olive.', es: 'Vermut añejo, ginebra mediterránea, amargo cítrico, aceituna taggiasca.', fr: "Vermouth vieilli, gin méditerranéen, amer aux agrumes, olive taggiasca.", de: 'Gereifter Vermouth, mediterraner Gin, Zitrus-Bitter, Taggiasca-Olive.', ru: 'Выдержанный вермут, средиземноморский джин, цитрусовый биттер, оливка таджаска.' } },
+            { price: '€8,00', a: ['g','m'],
+              name: { it: "Tagliere d'Accompagnamento", en: 'Accompanying Board', es: 'Tabla de Acompañamiento', fr: 'Planche d\'Accompagnement', de: 'Begleitplatte', ru: 'Сопровождающая доска' },
+              desc: { it: 'Salumi, formaggi, olive, focaccia.', en: 'Cured meats, cheeses, olives, focaccia.', es: 'Embutidos, quesos, aceitunas, focaccia.', fr: 'Charcuteries, fromages, olives, focaccia.', de: 'Aufschnitt, Käse, Oliven, Focaccia.', ru: 'Колбасы, сыры, оливки, фокачча.' } }
+          ]
+        },
+        {
+          id: 'birre',
+          name: { it: 'Birre', en: 'Beers', es: 'Cervezas', fr: 'Bières', de: 'Biere', ru: 'Пиво' },
+          note: { it: 'Alla spina e in bottiglia.', en: 'On tap and bottled.', es: 'De barril y en botella.', fr: 'À la pression et en bouteille.', de: 'Vom Fass und in Flaschen.', ru: 'Разливное и бутылочное.' },
+          items: [
+            { price: '€3,50 / €5,50', a: ['g','A'],
+              name: { it: 'Birra Moretti — Spina', en: 'Birra Moretti — Draft', es: 'Birra Moretti — Barril', fr: 'Birra Moretti — Pression', de: 'Birra Moretti — Fass', ru: 'Биrra Моретти — разливное' },
+              desc: { it: 'Lager italiana, 0,2 L / 0,4 L.', en: 'Italian lager, 0.2 L / 0.4 L.', es: 'Lager italiana, 0,2 L / 0,4 L.', fr: 'Lager italienne, 0,2 L / 0,4 L.', de: 'Italienisches Lager, 0,2 L / 0,4 L.', ru: 'Итальянский лагер, 0,2 L / 0,4 L.' } },
+            { price: '€5,00', a: ['g','A'],
+              name: { it: 'Menabrea Bionda', en: 'Menabrea Bionda', es: 'Menabrea Bionda', fr: 'Menabrea Bionda', de: 'Menabrea Bionda', ru: 'Менабреа Бьонда' },
+              desc: { it: 'Bottiglia 33 cl, dorata e delicata.', en: '33 cl bottle, golden and delicate.', es: 'Botella 33 cl, dorada y delicada.', fr: 'Bouteille 33 cl, dorée et délicate.', de: '33 cl Flasche, golden und zart.', ru: 'Бутылка 33 cl, золотистая и деликатная.' } },
+            { price: '€4,50', a: ['g','A'],
+              name: { it: 'Peroni Nastro Azzurro', en: 'Peroni Nastro Azzurro', es: 'Peroni Nastro Azzurro', fr: 'Peroni Nastro Azzurro', de: 'Peroni Nastro Azzurro', ru: 'Перони Настро Адзурро' },
+              desc: { it: 'Bottiglia 33 cl, secca e pulita.', en: '33 cl bottle, dry and clean.', es: 'Botella 33 cl, seca y limpia.', fr: 'Bouteille 33 cl, sèche et propre.', de: '33 cl Flasche, trocken und sauber.', ru: 'Бутылка 33 cl, сухое и чистое.' } },
+            { price: '€6,50', a: ['g','A'],
+              name: { it: 'Baladin Nazionale', en: 'Baladin Nazionale', es: 'Baladin Nazionale', fr: 'Baladin Nazionale', de: 'Baladin Nazionale', ru: 'Баладин Национале' },
+              desc: { it: 'Birra artigianale italiana, 33 cl.', en: 'Italian craft beer, 33 cl.', es: 'Cerveza artesanal italiana, 33 cl.', fr: 'Bière artisanale italienne, 33 cl.', de: 'Italienisches Craft Beer, 33 cl.', ru: 'Итальянское крафтовое пиво, 33 cl.' } },
+            { price: '€5,00', a: ['g','A'],
+              name: { it: 'Ichnusa Non Filtrata', en: 'Ichnusa Unfiltered', es: 'Ichnusa No Filtrada', fr: 'Ichnusa Non Filtrée', de: 'Ichnusa Ungefiltert', ru: 'Икнуза нефильтрованное' },
+              desc: { it: 'Sarda, rustica, leggermente velata.', en: 'Sardinian, rustic, lightly hazy.', es: 'Sarda, rústica, ligeramente velada.', fr: 'Sarde, rustique, légèrement voilée.', de: 'Sardisch, rustikal, leicht trüb.', ru: 'Сардинское, деревенское, слегка мутное.' } }
+          ]
+        },
+        {
+          id: 'vini',
+          name: { it: 'Vini', en: 'Wines', es: 'Vinos', fr: 'Vins', de: 'Weine', ru: 'Вина' },
+          note: { it: 'Selezione di cantine italiane — Calice / Bottiglia.', en: 'Selection from Italian estates — Glass / Bottle.', es: 'Selección de bodegas italianas — Copa / Botella.', fr: 'Sélection de domaines italiens — Verre / Bouteille.', de: 'Auswahl italienischer Weingüter — Glas / Flasche.', ru: 'Выбор итальянских виноделен — Бокал / Бутылка.' },
+          items: [
+            { price: '€6,00 / €28,00', a: ['A'],
+              name: { it: 'Falanghina del Sannio DOC', en: 'Falanghina del Sannio DOC', es: 'Falanghina del Sannio DOC', fr: 'Falanghina del Sannio DOC', de: 'Falanghina del Sannio DOC', ru: 'Фаланджина дель Саннио DOC' },
+              desc: { it: 'Bianco campano, fresco, note di mela e ginestra.', en: 'Campanian white, fresh, apple and broom notes.', es: 'Blanco campano, fresco, notas de manzana y retama.', fr: 'Blanc de Campanie, frais, notes de pomme et genêt.', de: 'Weißwein aus Kampanien, frisch, Apfel- und Ginsternoten.', ru: 'Кампанское белое, свежее, ноты яблока.' } },
+            { price: '€6,50 / €30,00', a: ['A'],
+              name: { it: 'Vermentino di Sardegna DOC', en: 'Vermentino di Sardegna DOC', es: 'Vermentino di Sardegna DOC', fr: 'Vermentino di Sardegna DOC', de: 'Vermentino di Sardegna DOC', ru: 'Верментино ди Сарденья DOC' },
+              desc: { it: 'Sapido, agrumato, dal sole del Mediterraneo.', en: 'Savoury, citrusy, from the Mediterranean sun.', es: 'Sabroso, cítrico, del sol del Mediterráneo.', fr: 'Sapide, agrumes, du soleil méditerranéen.', de: 'Würzig, zitrusartig, aus der mediterranen Sonne.', ru: 'Минеральное, цитрусовое, средиземноморское.' } },
+            { price: '€7,00 / €32,00', a: ['A'],
+              name: { it: 'Chianti Classico DOCG', en: 'Chianti Classico DOCG', es: 'Chianti Classico DOCG', fr: 'Chianti Classico DOCG', de: 'Chianti Classico DOCG', ru: 'Кьянти Классико DOCG' },
+              desc: { it: 'Rosso toscano, sangiovese, equilibrato e austero.', en: 'Tuscan red, Sangiovese, balanced and austere.', es: 'Tinto toscano, Sangiovese, equilibrado y austero.', fr: 'Rouge toscan, Sangiovese, équilibré et austère.', de: 'Toskanischer Rotwein, Sangiovese, ausgewogen.', ru: 'Тосканское красное, Санджовезе, сбалансированное.' } },
+            { price: '€7,50 / €36,00', a: ['A'],
+              name: { it: 'Aglianico del Vulture DOC', en: 'Aglianico del Vulture DOC', es: 'Aglianico del Vulture DOC', fr: 'Aglianico del Vulture DOC', de: 'Aglianico del Vulture DOC', ru: 'Альянико дель Вультуре DOC' },
+              desc: { it: 'Rosso lucano, intenso, tannico, di gran carattere.', en: 'Lucanian red, intense, tannic, full of character.', es: 'Tinto lucano, intenso, tánico, con gran carácter.', fr: 'Rouge lucanien, intense, tannique, plein de caractère.', de: 'Lukanischer Rotwein, intensiv, tanninreich.', ru: 'Луканское красное, насыщенное, танинное.' } },
+            { price: '€6,00 / €26,00', a: ['A'],
+              name: { it: "Cerasuolo d'Abruzzo DOC", en: "Cerasuolo d'Abruzzo DOC", es: "Cerasuolo d'Abruzzo DOC", fr: "Cerasuolo d'Abruzzo DOC", de: "Cerasuolo d'Abruzzo DOC", ru: 'Черасуоло д\'Абруццо DOC' },
+              desc: { it: 'Rosato profondo, frutti rossi e ciliegia matura.', en: 'Deep rosé, red berries and ripe cherry.', es: 'Rosado profundo, frutos rojos y cereza madura.', fr: 'Rosé profond, fruits rouges et cerise mûre.', de: 'Tiefes Rosé, rote Früchte und reife Kirsche.', ru: 'Глубокое розовое, красные ягоды и спелая вишня.' } },
+            { price: '€6,50 / €30,00', a: ['A'],
+              name: { it: 'Prosecco di Valdobbiadene DOCG', en: 'Prosecco di Valdobbiadene DOCG', es: 'Prosecco di Valdobbiadene DOCG', fr: 'Prosecco di Valdobbiadene DOCG', de: 'Prosecco di Valdobbiadene DOCG', ru: 'Просекко ди Вальдоббьядене DOCG' },
+              desc: { it: 'Bollicine fini, pesca bianca, finale asciutto.', en: 'Fine bubbles, white peach, dry finish.', es: 'Burbujas finas, melocotón blanco, final seco.', fr: 'Bulles fines, pêche blanche, finale sèche.', de: 'Feine Perlen, weißer Pfirsich, trockenes Finale.', ru: 'Тонкие пузырьки, белый персик, сухое послевкусие.' } }
+          ]
+        },
+        {
+          id: 'cucina',
+          name: { it: 'Cucina', en: 'Kitchen', es: 'Cocina', fr: 'Cuisine', de: 'Küche', ru: 'Кухня' },
+          note: { it: 'Piatti leggeri, ricette di sempre.', en: 'Light dishes, timeless recipes.', es: 'Platos ligeros, recetas de siempre.', fr: 'Plats légers, recettes intemporelles.', de: 'Leichte Gerichte, zeitlose Rezepte.', ru: 'Лёгкие блюда, классические рецепты.' },
+          items: [
+            { price: '€5,50', a: ['g'],
+              name: { it: "Tramezzino dell'Ammiraglio", en: "Admiral's Tramezzino", es: 'Tramezzino del Almirante', fr: "Tramezzino de l'Amiral", de: 'Tramezzino des Admirals', ru: 'Трамеццино Адмирала' },
+              desc: { it: 'Pane morbido, tonno, maionese al limone, uova e capperi.', en: 'Soft bread, tuna, lemon mayo, eggs and capers.', es: 'Pan blando, atún, mayonesa de limón, huevos y alcaparras.', fr: 'Pain moelleux, thon, mayonnaise au citron, œufs et câpres.', de: 'Weiches Brot, Thunfisch, Zitronenmayo, Eier und Kapern.', ru: 'Мягкий хлеб, тунец, лимонный майонез, яйца и каперсы.' } },
+            { price: '€7,00', a: ['g','n'],
+              name: { it: 'Panino con Mortadella e Pistacchio', en: 'Mortadella & Pistachio Sandwich', es: 'Sándwich Mortadela y Pistacho', fr: 'Sandwich Mortadelle-Pistache', de: 'Mortadella-Pistazien-Sandwich', ru: 'Сэндвич с мортаделлой и фисташкой' },
+              desc: { it: 'Focaccia artigianale, mortadella bolognese, crema di pistacchio.', en: 'Artisan focaccia, Bologna mortadella, pistachio cream.', es: 'Focaccia artesanal, mortadela boloñesa, crema de pistacho.', fr: 'Focaccia artisanale, mortadelle bolognaise, crème de pistache.', de: 'Handwerkliche Focaccia, Bologna-Mortadella, Pistaziencreme.', ru: 'Ремесленная фокачча, болонская мортаделла, фисташковый крем.' } },
+            { price: '€9,00', a: ['m'],
+              name: { it: 'Caprese', en: 'Caprese', es: 'Caprese', fr: 'Caprese', de: 'Caprese', ru: 'Капрезе' },
+              desc: { it: 'Mozzarella di bufala campana DOP, pomodoro, basilico, olio extravergine.', en: 'Campanian buffalo mozzarella DOP, tomato, basil, extra-virgin olive oil.', es: 'Mozzarella de búfala campana DOP, tomate, albahaca, AOVE.', fr: 'Mozzarella di bufala campana DOP, tomate, basilic, huile extra vierge.', de: 'Büffelmozzarella aus Kampanien DOP, Tomate, Basilikum, natives Olivenöl.', ru: 'Моцарелла буффало DOP, помидор, базилик, оливковое масло.' } },
+            { price: '€14,00', a: ['g','m'],
+              name: { it: 'Tagliere di Salumi e Formaggi', en: 'Cured Meats & Cheese Board', es: 'Tabla de Embutidos y Quesos', fr: 'Planche Charcuteries et Fromages', de: 'Wurst- und Käseplatte', ru: 'Доска мясной нарезки и сыров' },
+              desc: { it: "Selezione del giorno, mostarda, miele d'acacia, pane casereccio.", en: 'Daily selection, mostarda, acacia honey, country bread.', es: 'Selección del día, mostarda, miel de acacia, pan rústico.', fr: 'Sélection du jour, mostarda, miel d\'acacia, pain de campagne.', de: 'Tagesauswahl, Mostarda, Akazienhonig, Bauernbrot.', ru: 'Выбор дня, мостарда, акациевый мёд, деревенский хлеб.' } },
+            { price: '€10,00', a: ['m','n'],
+              name: { it: 'Insalata di Stagione', en: 'Seasonal Salad', es: 'Ensalada de Temporada', fr: 'Salade de Saison', de: 'Saisonsalat', ru: 'Сезонный салат' },
+              desc: { it: 'Foglie miste, frutta secca, scaglie di pecorino, vinaigrette al miele.', en: 'Mixed leaves, nuts, pecorino shavings, honey vinaigrette.', es: 'Hojas mixtas, frutos secos, virutas de pecorino, vinagreta de miel.', fr: 'Mélange de feuilles, fruits secs, copeaux de pecorino, vinaigrette au miel.', de: 'Gemischte Blätter, Nüsse, Pecorino-Späne, Honig-Vinaigrette.', ru: 'Микс листьев, орехи, стружка пекорино, медовый винегрет.' } },
+            { price: '€12,00', a: ['g'],
+              name: { it: 'Pasta del Giorno', en: "Chef's Pasta", es: 'Pasta del Día', fr: 'Pâtes du Jour', de: 'Pasta des Tages', ru: 'Паста дня' },
+              desc: { it: 'Chiedere al personale la proposta dello chef.', en: "Ask the staff for today's pasta.", es: 'Pregunte al personal por la propuesta del chef.', fr: 'Demandez au personnel la proposition du chef.', de: 'Fragen Sie das Personal nach dem Vorschlag des Chefs.', ru: 'Спросите у персонала предложение шефа.' } },
+            { price: '€5,50', a: ['g','m'],
+              name: { it: 'Tiramisù della Casa', en: 'House Tiramisù', es: 'Tiramisú de la Casa', fr: 'Tiramisù Maison', de: 'Hausgemachter Tiramisù', ru: 'Домашний тирамису' },
+              desc: { it: 'Savoiardi, mascarpone, caffè espresso, cacao amaro.', en: 'Savoiardi, mascarpone, espresso coffee, bitter cocoa.', es: 'Savoiardi, mascarpone, café espresso, cacao amargo.', fr: 'Savoiardi, mascarpone, café espresso, cacao amer.', de: 'Savoiardi, Mascarpone, Espresso, bittere Kakao.', ru: 'Савоярди, маскарпоне, эспрессо, какао.' } }
+          ]
+        }
+      ]
+    };
+
+    // ====================================================================
+    // STATE & HELPERS
+    // ====================================================================
+    const STORAGE_KEY = 'ammiraglio.lang';
+    let currentLang = 'it';
+
+    function getInitialLang() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved && LANGS.includes(saved)) return saved;
+      } catch (e) {}
+      const browser = (navigator.language || 'it').slice(0, 2).toLowerCase();
+      return LANGS.includes(browser) ? browser : 'it';
+    }
+
+    function allergenDots(codes) {
+      if (!codes || !codes.length) return '';
+      const map = { g: 'gluten', m: 'milk', n: 'nuts', A: 'alcohol' };
+      const dots = codes.map((c) => `<span class="allergen allergen--${map[c]}"></span>`).join('');
+      return `<span class="allergens">${dots}</span>`;
+    }
+
+    // ====================================================================
+    // RENDER
+    // ====================================================================
+    function renderLangSwitcher() {
+      const root = document.getElementById('lang');
+      root.innerHTML = LANGS.map((code) => `
+        <button type="button" class="lang__btn${code === currentLang ? ' is-active' : ''}"
+                data-lang="${code}" aria-label="${code.toUpperCase()}"
+                aria-pressed="${code === currentLang}">
+          ${FLAGS[code]}
+        </button>
+      `).join('');
+
+      root.querySelectorAll('.lang__btn').forEach((btn) => {
+        btn.addEventListener('click', () => switchLang(btn.getAttribute('data-lang')));
+      });
+    }
+
+    function renderNav() {
+      const list = document.getElementById('navList');
+      list.innerHTML = MENU.sections.map((s) => `
+        <li><a class="nav__link" href="#${s.id}">${s.name[currentLang]}</a></li>
+      `).join('');
+
+      list.querySelectorAll('.nav__link').forEach((link) => {
+        link.addEventListener('click', () => {
+          if (list.classList.contains('is-open')) {
+            list.classList.remove('is-open');
+            const tg = document.getElementById('navToggle');
+            tg.setAttribute('aria-expanded', 'false');
+            tg.textContent = '☰';
+          }
+        });
+      });
+    }
+
+    function renderLegend() {
+      const t = UI[currentLang];
+      const el = document.getElementById('legend');
+      el.setAttribute('aria-label', t.allergenLegend);
+      el.innerHTML = `
+        <span><span class="allergen allergen--gluten"></span>${t.gluten}</span>
+        <span><span class="allergen allergen--milk"></span>${t.milk}</span>
+        <span><span class="allergen allergen--nuts"></span>${t.nuts}</span>
+        <span><span class="allergen allergen--alcohol"></span>${t.alcohol}</span>
+      `;
+    }
+
+    function renderSections() {
+      const root = document.getElementById('sections');
+      const glyphs = ['─ ✦ ─', '─ ❖ ─'];
+
+      root.innerHTML = MENU.sections.map((section, i) => {
+        const items = section.items.map((it, idx) => {
+          const isLast = idx === section.items.length - 1;
+          return `
+            <li class="item${isLast ? ' item--no-border' : ''}">
+              <div class="item__body">
+                <h3 class="item__name">${it.name[currentLang]}</h3>
+                <p class="item__desc">${it.desc[currentLang]}${allergenDots(it.a)}</p>
+              </div>
+              <span class="item__price">${it.price}</span>
+            </li>
+          `;
+        }).join('');
+
+        const divider = i > 0
+          ? `<div class="divider" aria-hidden="true"><span class="divider__glyph">${glyphs[i % 2]}</span></div>`
+          : '';
+
+        return `
+          ${divider}
+          <section class="section" id="${section.id}">
+            <div class="section__header">
+              <h2 class="section__title">${section.name[currentLang]}</h2>
+              <p class="section__note">${section.note[currentLang]}</p>
+            </div>
+            <ul class="items">${items}</ul>
+          </section>
+        `;
+      }).join('');
+
+      // Observer per animare le sezioni
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.querySelector('.section__header')?.classList.add('is-visible');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.18, rootMargin: '0px 0px -10% 0px' });
+        root.querySelectorAll('.section').forEach((s) => io.observe(s));
+      } else {
+        root.querySelectorAll('.section__header').forEach((h) => h.classList.add('is-visible'));
+      }
+    }
+
+    function renderStatic() {
+      const t = UI[currentLang];
+      document.documentElement.lang = currentLang;
+      document.title = t.title;
+      const meta = document.querySelector('meta[name="description"]');
+      if (meta) meta.setAttribute('content', t.title);
+      document.querySelector('.hero__logo').setAttribute('alt', t.logoAlt);
+      document.getElementById('navToggle').setAttribute('aria-label', t.menuLabel);
+      document.getElementById('lang').setAttribute('aria-label', t.langLabel);
+      document.getElementById('footerMeta').textContent = t.copyright;
+      document.getElementById('nav').setAttribute('aria-label', t.menuLabel);
+    }
+
+    // ====================================================================
+    // SWITCH LANGUAGE
+    // ====================================================================
+    function switchLang(lang) {
+      if (!LANGS.includes(lang)) return;
+      currentLang = lang;
+      try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+      renderStatic();
+      renderLangSwitcher();
+      renderNav();
+      renderLegend();
+      renderSections();
+    }
+
+    // ====================================================================
+    // INIT
+    // ====================================================================
+    function init() {
+      currentLang = getInitialLang();
+      renderStatic();
+      renderLangSwitcher();
+      renderNav();
+      renderLegend();
+      renderSections();
+
+      // Nav scroll
+      const nav = document.getElementById('nav');
+      const onScroll = () => {
+        if (window.scrollY > 60) nav.classList.add('nav--scrolled');
+        else nav.classList.remove('nav--scrolled');
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      // Mobile hamburger
+      const toggle = document.getElementById('navToggle');
+      const list = document.getElementById('navList');
+      toggle.addEventListener('click', () => {
+        const open = list.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.textContent = open ? '×' : '☰';
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script>
+</body>
+</html>
