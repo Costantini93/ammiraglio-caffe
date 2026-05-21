@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Ammiraglio Caffè — menù digitale." />
+  <meta name="theme-color" content="#3D0612" />
   <title>Ammiraglio Caffè — Menù</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -74,16 +75,7 @@
       -webkit-backdrop-filter: blur(8px);
       border-bottom: 1px solid rgba(168, 135, 42, 0.35);
     }
-    .nav__brand {
-      font-family: var(--font-display);
-      font-size: 1.05rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--color-gold);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-    .nav--scrolled .nav__brand { opacity: 1; }
+    .nav__brand { display: none; }
     .nav__right { display: flex; align-items: center; gap: 0.75rem; }
 
     .nav__list { list-style: none; margin: 0; padding: 0; display: flex; gap: 2rem; }
@@ -131,14 +123,15 @@
     .nav__toggle {
       display: none;
       background: none;
-      border: 1px solid var(--color-gold-antique);
+      border: none;
       color: var(--color-gold);
-      width: 42px; height: 36px;
+      width: 38px; height: 38px;
       cursor: pointer;
-      font-size: 1.1rem;
-      border-radius: 2px;
+      font-size: 1.5rem;
+      line-height: 1;
+      padding: 0;
     }
-    .nav__toggle:focus-visible { outline: 2px solid var(--color-gold-bright); outline-offset: 2px; }
+    .nav__toggle:focus-visible { outline: 1px dotted var(--color-gold-antique); outline-offset: 3px; }
 
     /* HERO */
     .hero {
@@ -147,6 +140,7 @@
       align-items: center;
       text-align: center;
       padding: var(--nav-height) 1.5rem 0;
+      margin-bottom: -1.5rem;
     }
     .hero__logo {
       width: clamp(320px, 70vw, 560px);
@@ -200,14 +194,16 @@
 
     .items { list-style: none; margin: 0; padding: 0; }
     .item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 1rem 1.5rem;
       padding: 1.1rem 0;
-      border-bottom: 1px dotted rgba(168, 135, 42, 0.28);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.25);
     }
     .item--no-border { border-bottom: none; }
-    .item__body { min-width: 0; }
+    .item__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
     .item__name {
       font-family: var(--font-display);
       font-size: 1.18rem;
@@ -215,6 +211,14 @@
       color: var(--color-cream);
       margin: 0;
       letter-spacing: 0.01em;
+      flex: 1;
+      min-width: 0;
+    }
+    .item__dots {
+      flex: 1;
+      border-bottom: 1px dotted rgba(201, 168, 76, 0.35);
+      margin: 0 0.4rem 0.35rem;
+      min-width: 1rem;
     }
     .item__desc {
       font-family: var(--font-sub);
@@ -228,8 +232,6 @@
       font-size: 1.05rem;
       color: var(--color-gold);
       white-space: nowrap;
-      align-self: start;
-      padding-top: 0.15rem;
       letter-spacing: 0.02em;
     }
 
@@ -331,10 +333,9 @@
       .item { padding: 1rem 0; }
     }
     @media (max-width: 480px) {
-      .item { grid-template-columns: 1fr; gap: 0.4rem; }
-      .item__price { align-self: start; padding-top: 0; }
       .divider { margin: 2rem auto; }
       .lang__btn svg { width: 22px; height: 14px; }
+      .item__dots { display: none; }
     }
 
     @media print {
@@ -351,8 +352,6 @@
 <body>
 
   <nav class="nav" id="nav" aria-label="Navigation">
-    <span class="nav__brand">Ammiraglio Caffè</span>
-
     <div class="nav__right">
       <div class="lang" id="lang" role="group" aria-label="Language"></div>
       <button class="nav__toggle" id="navToggle" aria-controls="navList" aria-expanded="false" aria-label="Menu">☰</button>
@@ -703,11 +702,12 @@
           const isLast = idx === section.items.length - 1;
           return `
             <li class="item${isLast ? ' item--no-border' : ''}">
-              <div class="item__body">
+              <div class="item__head">
                 <h3 class="item__name">${it.name[currentLang]}</h3>
-                <p class="item__desc">${it.desc[currentLang]}${allergenDots(it.a)}</p>
+                <span class="item__dots" aria-hidden="true"></span>
+                <span class="item__price">${it.price}</span>
               </div>
-              <span class="item__price">${it.price}</span>
+              <p class="item__desc">${it.desc[currentLang]}${allergenDots(it.a)}</p>
             </li>
           `;
         }).join('');
