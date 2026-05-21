@@ -76,7 +76,7 @@
       border-bottom: 1px solid rgba(168, 135, 42, 0.35);
     }
     .nav__brand { display: none; }
-    .nav__right { display: flex; align-items: center; gap: 0.75rem; margin-left: auto; }
+    .nav__right { display: flex; align-items: center; gap: 0.75rem; }
 
     .nav__list { list-style: none; margin: 0; padding: 0; display: flex; gap: 2rem; }
     .nav__link {
@@ -130,6 +130,7 @@
       font-size: 1.5rem;
       line-height: 1;
       padding: 0;
+      margin-left: auto;
     }
     .nav__toggle:focus-visible { outline: 1px dotted var(--color-gold-antique); outline-offset: 3px; }
 
@@ -354,8 +355,8 @@
   <nav class="nav" id="nav" aria-label="Navigation">
     <div class="nav__right">
       <div class="lang" id="lang" role="group" aria-label="Language"></div>
-      <button class="nav__toggle" id="navToggle" aria-controls="navList" aria-expanded="false" aria-label="Menu">☰</button>
     </div>
+    <button class="nav__toggle" id="navToggle" aria-controls="navList" aria-expanded="false" aria-label="Menu">☰</button>
 
     <ul class="nav__list" id="navList"></ul>
   </nav>
