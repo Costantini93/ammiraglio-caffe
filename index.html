@@ -6,8 +6,11 @@
   <meta name="description" content="Ammiraglio Caffè — menù digitale." />
   <meta name="theme-color" content="#3D0612" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Ammiraglio Caffè — Menù</title>
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%233D0612'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='Georgia,serif' font-size='38' font-weight='700' fill='%23C9A84C'%3EA%3C/text%3E%3C/svg%3E" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -161,6 +164,93 @@
     }
     @keyframes heroLogoIn { to { opacity: 1; transform: scale(1); } }
 
+    /* HERO CTA — Prenotazione tavolo */
+    .hero__cta {
+      width: 100%;
+      max-width: 640px;
+      margin: 0.25rem auto 0;
+      padding: 0.5rem 1.5rem 1.5rem;
+      text-align: center;
+      position: relative;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: heroCtaIn 1.2s ease 0.6s forwards;
+    }
+    @keyframes heroCtaIn { to { opacity: 1; transform: translateY(0); } }
+    .hero__cta-title {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 600;
+      font-size: clamp(1.4rem, 3.2vw, 1.9rem);
+      color: var(--color-cream);
+      margin: 0 0 0.4rem;
+      letter-spacing: 0.02em;
+    }
+    .hero__cta-sub {
+      font-family: var(--font-sub);
+      font-style: italic;
+      font-size: 0.98rem;
+      color: var(--color-cream-dim);
+      margin: 0 0 1.4rem;
+      letter-spacing: 0.03em;
+    }
+    .hero__cta-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.95rem 2.2rem;
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-bg);
+      background: linear-gradient(135deg, var(--color-gold-bright) 0%, var(--color-gold) 50%, var(--color-gold-antique) 100%);
+      border: 1px solid var(--color-gold-bright);
+      border-radius: 2px;
+      text-decoration: none;
+      overflow: hidden;
+      box-shadow:
+        0 6px 24px rgba(201, 168, 76, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .hero__cta-btn::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -120%;
+      width: 60%; height: 100%;
+      background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.55) 50%, transparent 100%);
+      transform: skewX(-20deg);
+      animation: ctaShine 3.4s ease-in-out infinite;
+    }
+    @keyframes ctaShine {
+      0%   { left: -120%; }
+      55%  { left: 130%; }
+      100% { left: 130%; }
+    }
+    .hero__cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 10px 32px rgba(201, 168, 76, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+    .hero__cta-btn:focus-visible {
+      outline: 2px dotted var(--color-cream);
+      outline-offset: 4px;
+    }
+    .hero__cta-btn svg {
+      width: 20px; height: 20px;
+      position: relative; z-index: 1;
+    }
+    .hero__cta-btn span { position: relative; z-index: 1; }
+
+    @media (max-width: 480px) {
+      .hero__cta { padding: 0.25rem 1rem 1rem; }
+      .hero__cta-btn { padding: 0.85rem 1.6rem; font-size: 0.95rem; letter-spacing: 0.14em; }
+    }
+
     /* DIVIDERS */
     .divider {
       display: flex; align-items: center; justify-content: center;
@@ -258,7 +348,7 @@
 
     .legend {
       max-width: var(--container);
-      margin: 0.25rem auto 0;
+      margin: 2.5rem auto 0;
       padding: 0.25rem 1.5rem 0;
       font-family: var(--font-sub);
       font-style: italic;
@@ -371,6 +461,19 @@
 
   <header class="hero">
     <img class="hero__logo" src="./logo-ammiraglio.png" alt="Ammiraglio Caffè" />
+
+    <div class="hero__cta">
+      <p class="hero__cta-title" id="ctaTitle"></p>
+      <p class="hero__cta-sub" id="ctaSub"></p>
+      <a class="hero__cta-btn" id="ctaBtn"
+         href="https://wa.me/393423707453"
+         target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M19.11 4.91A9.82 9.82 0 0 0 12.05 2C6.6 2 2.16 6.44 2.16 11.89c0 1.74.46 3.44 1.32 4.94L2.08 22l5.31-1.39a9.86 9.86 0 0 0 4.66 1.19h.01c5.45 0 9.89-4.44 9.89-9.89 0-2.64-1.03-5.13-2.84-7Zm-7.06 15.21h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.15.83.84-3.07-.2-.31a8.18 8.18 0 0 1-1.26-4.35c0-4.53 3.69-8.22 8.23-8.22 2.2 0 4.26.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.53-3.69 8.21-8.2 8.21Zm4.5-6.15c-.25-.12-1.46-.72-1.69-.8-.23-.08-.39-.12-.56.12s-.64.8-.78.96c-.14.17-.29.19-.53.06-.25-.12-1.04-.38-1.98-1.22-.73-.65-1.22-1.46-1.37-1.71-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.84-.86 2.05s.88 2.38 1 2.55c.12.17 1.73 2.63 4.19 3.69.58.25 1.04.4 1.4.51.59.19 1.13.16 1.55.1.47-.07 1.46-.6 1.67-1.18.21-.58.21-1.08.14-1.18-.06-.1-.22-.16-.46-.28Z"/>
+        </svg>
+        <span id="ctaBtnLabel"></span>
+      </a>
+    </div>
   </header>
 
   <main class="menu" id="menu">
@@ -407,12 +510,12 @@
     // UI STRINGS (per lingua)
     // ====================================================================
     const UI = {
-      it: { title: 'Ammiraglio Caffè — Menù', menuLabel: 'Apri menù', langLabel: 'Lingua', allergenLegend: 'Legenda allergeni', gluten: 'Glutine', milk: 'Latte', nuts: 'Frutta a guscio', alcohol: 'Alcol', social: 'Profili social', copyright: '© 2026 Ammiraglio Caffè — Tutti i diritti riservati', logoAlt: 'Stemma Ammiraglio Caffè', book: 'Prenota un tavolo' },
-      en: { title: 'Ammiraglio Caffè — Menu',  menuLabel: 'Open menu',  langLabel: 'Language', allergenLegend: 'Allergen legend', gluten: 'Gluten', milk: 'Milk', nuts: 'Tree nuts', alcohol: 'Alcohol', social: 'Social profiles', copyright: '© 2026 Ammiraglio Caffè — All rights reserved', logoAlt: 'Ammiraglio Caffè crest', book: 'Book a table' },
-      es: { title: 'Ammiraglio Caffè — Menú',  menuLabel: 'Abrir menú', langLabel: 'Idioma',  allergenLegend: 'Leyenda de alérgenos', gluten: 'Gluten', milk: 'Leche', nuts: 'Frutos secos', alcohol: 'Alcohol', social: 'Redes sociales', copyright: '© 2026 Ammiraglio Caffè — Todos los derechos reservados', logoAlt: 'Escudo Ammiraglio Caffè', book: 'Reservar mesa' },
-      fr: { title: 'Ammiraglio Caffè — Menu',  menuLabel: 'Ouvrir le menu', langLabel: 'Langue', allergenLegend: 'Légende des allergènes', gluten: 'Gluten', milk: 'Lait', nuts: 'Fruits à coque', alcohol: 'Alcool', social: 'Réseaux sociaux', copyright: '© 2026 Ammiraglio Caffè — Tous droits réservés', logoAlt: 'Emblème Ammiraglio Caffè', book: 'Réserver une table' },
-      de: { title: 'Ammiraglio Caffè — Speisekarte', menuLabel: 'Menü öffnen', langLabel: 'Sprache', allergenLegend: 'Allergen-Legende', gluten: 'Gluten', milk: 'Milch', nuts: 'Schalenfrüchte', alcohol: 'Alkohol', social: 'Soziale Profile', copyright: '© 2026 Ammiraglio Caffè — Alle Rechte vorbehalten', logoAlt: 'Ammiraglio Caffè Wappen', book: 'Tisch reservieren' },
-      ru: { title: 'Ammiraglio Caffè — Меню', menuLabel: 'Открыть меню', langLabel: 'Язык', allergenLegend: 'Список аллергенов', gluten: 'Глютен', milk: 'Молоко', nuts: 'Орехи', alcohol: 'Алкоголь', social: 'Социальные сети', copyright: '© 2026 Ammiraglio Caffè — Все права защищены', logoAlt: 'Герб Ammiraglio Caffè', book: 'Забронировать столик' }
+      it: { title: 'Ammiraglio Caffè — Menù', menuLabel: 'Apri menù', langLabel: 'Lingua', allergenLegend: 'Legenda allergeni', gluten: 'Glutine', milk: 'Latte', nuts: 'Frutta a guscio', alcohol: 'Alcol', social: 'Profili social', copyright: '© 2026 Ammiraglio Caffè — Tutti i diritti riservati', logoAlt: 'Stemma Ammiraglio Caffè', book: 'Prenota un tavolo', ctaTitle: 'Vuoi prenotare un tavolo?', ctaSub: 'Scrivici su WhatsApp.', ctaBtn: 'Prenota ora' },
+      en: { title: 'Ammiraglio Caffè — Menu',  menuLabel: 'Open menu',  langLabel: 'Language', allergenLegend: 'Allergen legend', gluten: 'Gluten', milk: 'Milk', nuts: 'Tree nuts', alcohol: 'Alcohol', social: 'Social profiles', copyright: '© 2026 Ammiraglio Caffè — All rights reserved', logoAlt: 'Ammiraglio Caffè crest', book: 'Book a table', ctaTitle: 'Would you like to book a table?', ctaSub: 'Message us on WhatsApp.', ctaBtn: 'Book now' },
+      es: { title: 'Ammiraglio Caffè — Menú',  menuLabel: 'Abrir menú', langLabel: 'Idioma',  allergenLegend: 'Leyenda de alérgenos', gluten: 'Gluten', milk: 'Leche', nuts: 'Frutos secos', alcohol: 'Alcohol', social: 'Redes sociales', copyright: '© 2026 Ammiraglio Caffè — Todos los derechos reservados', logoAlt: 'Escudo Ammiraglio Caffè', book: 'Reservar mesa', ctaTitle: '¿Quieres reservar una mesa?', ctaSub: 'Escríbenos por WhatsApp.', ctaBtn: 'Reservar ahora' },
+      fr: { title: 'Ammiraglio Caffè — Menu',  menuLabel: 'Ouvrir le menu', langLabel: 'Langue', allergenLegend: 'Légende des allergènes', gluten: 'Gluten', milk: 'Lait', nuts: 'Fruits à coque', alcohol: 'Alcool', social: 'Réseaux sociaux', copyright: '© 2026 Ammiraglio Caffè — Tous droits réservés', logoAlt: 'Emblème Ammiraglio Caffè', book: 'Réserver une table', ctaTitle: 'Vous souhaitez réserver une table\u202F?', ctaSub: 'Écrivez-nous sur WhatsApp.', ctaBtn: 'Réserver maintenant' },
+      de: { title: 'Ammiraglio Caffè — Speisekarte', menuLabel: 'Menü öffnen', langLabel: 'Sprache', allergenLegend: 'Allergen-Legende', gluten: 'Gluten', milk: 'Milch', nuts: 'Schalenfrüchte', alcohol: 'Alkohol', social: 'Soziale Profile', copyright: '© 2026 Ammiraglio Caffè — Alle Rechte vorbehalten', logoAlt: 'Ammiraglio Caffè Wappen', book: 'Tisch reservieren', ctaTitle: 'Möchten Sie einen Tisch reservieren?', ctaSub: 'Schreiben Sie uns auf WhatsApp.', ctaBtn: 'Jetzt reservieren' },
+      ru: { title: 'Ammiraglio Caffè — Меню', menuLabel: 'Открыть меню', langLabel: 'Язык', allergenLegend: 'Список аллергенов', gluten: 'Глютен', milk: 'Молоко', nuts: 'Орехи', alcohol: 'Алкоголь', social: 'Социальные сети', copyright: '© 2026 Ammiraglio Caffè — Все права защищены', logoAlt: 'Герб Ammiraglio Caffè', book: 'Забронировать столик', ctaTitle: 'Хотите забронировать столик?', ctaSub: 'Напишите нам в WhatsApp.', ctaBtn: 'Забронировать' }
     };
 
     // ====================================================================
@@ -769,6 +872,10 @@
       document.getElementById('lang').setAttribute('aria-label', t.langLabel);
       document.getElementById('footerMeta').textContent = t.copyright;
       document.getElementById('nav').setAttribute('aria-label', t.menuLabel);
+      document.getElementById('ctaTitle').textContent = t.ctaTitle;
+      document.getElementById('ctaSub').textContent = t.ctaSub;
+      document.getElementById('ctaBtnLabel').textContent = t.ctaBtn;
+      document.getElementById('ctaBtn').setAttribute('aria-label', t.ctaBtn);
     }
 
     // ====================================================================
