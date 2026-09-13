@@ -407,6 +407,20 @@
       color: var(--color-cream-dim);
       margin: 0.25rem 0 0;
     }
+    .item-group {
+      padding: 0.6rem 0 0.3rem;
+    }
+    .item-group:first-child { padding-top: 0; }
+    .item-group__title {
+      margin: 0;
+      font-family: var(--font-sub);
+      font-style: italic;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-gold-antique);
+    }
     .item__price {
       font-family: var(--font-body);
       font-size: 1.05rem;
@@ -775,6 +789,49 @@
           ]
         },
         {
+          id: 'vini',
+          name: { it: 'Vini', en: 'Wines', es: 'Vinos', fr: 'Vins', de: 'Weine', ru: 'Вина' },
+          note: { it: 'Selezione di cantine italiane e francesi — Calice / Bottiglia.', en: 'Selection from Italian and French estates — Glass / Bottle.', es: 'Selección de bodegas italianas y francesas — Copa / Botella.', fr: 'Sélection de domaines italiens et français — Verre / Bouteille.', de: 'Auswahl italienischer und französischer Weingüter — Glas / Flasche.', ru: 'Выбор итальянских и французских виноделен — Бокал / Бутылка.' },
+          items: [
+            { price: '€10,00 / €75,00', a: ['A'],
+              group: { id: 'bollicine', it: 'Bollicine', en: 'Sparkling Wines', es: 'Espumantes', fr: 'Effervescents', de: 'Schaumweine', ru: 'Игристые' },
+              name: { it: 'Champagne Drappier', en: 'Champagne Drappier', es: 'Champagne Drappier', fr: 'Champagne Drappier', de: 'Champagne Drappier', ru: 'Шампанское Драпье' },
+              desc: { it: 'Champagne francese, finezza e bollicine sottili.', en: 'French Champagne, finesse and fine bubbles.', es: 'Champán francés, finura y burbujas delicadas.', fr: 'Champagne français, finesse et bulles fines.', de: 'Französischer Champagner, Finesse und feine Perlage.', ru: 'Французское шампанское, изысканность и тонкие пузырьки.' } },
+            { price: '€7,00 / €45,00', a: ['A'],
+              group: { id: 'bollicine', it: 'Bollicine', en: 'Sparkling Wines', es: 'Espumantes', fr: 'Effervescents', de: 'Schaumweine', ru: 'Игристые' },
+              name: { it: 'Trento DOC Elisabetta Spenger — Blanc de Blancs', en: 'Trento DOC Elisabetta Spenger — Blanc de Blancs', es: 'Trento DOC Elisabetta Spenger — Blanc de Blancs', fr: 'Trento DOC Elisabetta Spenger — Blanc de Blancs', de: 'Trento DOC Elisabetta Spenger — Blanc de Blancs', ru: 'Тренто DOC Элизабетта Шпенгер — Blanc de Blancs' },
+              desc: { it: 'Metodo classico trentino, 100% Chardonnay.', en: 'Classic method from Trentino, 100% Chardonnay.', es: 'Método clásico del Trentino, 100% Chardonnay.', fr: 'Méthode classique du Trentin, 100% Chardonnay.', de: 'Klassische Methode aus dem Trentino, 100% Chardonnay.', ru: 'Классический метод из Трентино, 100% Шардоне.' } },
+            { price: '€7,00 / €45,00', a: ['A'],
+              group: { id: 'bollicine', it: 'Bollicine', en: 'Sparkling Wines', es: 'Espumantes', fr: 'Effervescents', de: 'Schaumweine', ru: 'Игристые' },
+              name: { it: 'Rosé Elisabetta Spenger', en: 'Rosé Elisabetta Spenger', es: 'Rosé Elisabetta Spenger', fr: 'Rosé Elisabetta Spenger', de: 'Rosé Elisabetta Spenger', ru: 'Розе Элизабетта Шпенгер' },
+              desc: { it: 'Metodo classico rosé, elegante e fruttato.', en: 'Classic method rosé, elegant and fruity.', es: 'Rosado de método clásico, elegante y afrutado.', fr: 'Rosé méthode classique, élégant et fruité.', de: 'Rosé nach klassischer Methode, elegant und fruchtig.', ru: 'Розе классического метода, элегантное и фруктовое.' } },
+            { price: '€5,00 / €32,00', a: ['A'],
+              group: { id: 'bollicine', it: 'Bollicine', en: 'Sparkling Wines', es: 'Espumantes', fr: 'Effervescents', de: 'Schaumweine', ru: 'Игристые' },
+              name: { it: 'Gemini Prosecco', en: 'Gemini Prosecco', es: 'Gemini Prosecco', fr: 'Gemini Prosecco', de: 'Gemini Prosecco', ru: 'Джемини Просекко' },
+              desc: { it: 'Prosecco fresco e fragrante.', en: 'Fresh and fragrant Prosecco.', es: 'Prosecco fresco y fragante.', fr: 'Prosecco frais et parfumé.', de: 'Frischer und duftiger Prosecco.', ru: 'Свежее и ароматное Просекко.' } },
+            { price: '€5,00 / €32,00', a: ['A'],
+              group: { id: 'bianchi', it: 'Bianchi Fermi', en: 'Still Whites', es: 'Blancos Tranquilos', fr: 'Blancs Tranquilles', de: 'Stille Weißweine', ru: 'Тихие белые' },
+              name: { it: 'Lugana De Tomi', en: 'Lugana De Tomi', es: 'Lugana De Tomi', fr: 'Lugana De Tomi', de: 'Lugana De Tomi', ru: 'Лугана Де Томи' },
+              desc: { it: 'Bianco del Garda, sapido e minerale.', en: 'White from Lake Garda, savoury and mineral.', es: 'Blanco del Garda, sabroso y mineral.', fr: 'Blanc du lac de Garde, sapide et minéral.', de: 'Weißwein vom Gardasee, würzig und mineralisch.', ru: 'Белое с озера Гарда, минеральное.' } },
+            { price: '€5,00 / €32,00', a: ['A'],
+              group: { id: 'bianchi', it: 'Bianchi Fermi', en: 'Still Whites', es: 'Blancos Tranquilos', fr: 'Blancs Tranquilles', de: 'Stille Weißweine', ru: 'Тихие белые' },
+              name: { it: 'Soave Coffele', en: 'Soave Coffele', es: 'Soave Coffele', fr: 'Soave Coffele', de: 'Soave Coffele', ru: 'Соаве Коффеле' },
+              desc: { it: 'Bianco veronese, fresco e floreale.', en: 'White from Verona, fresh and floral.', es: 'Blanco veronés, fresco y floral.', fr: 'Blanc véronais, frais et floral.', de: 'Weißwein aus Verona, frisch und blumig.', ru: 'Белое из Вероны, свежее и цветочное.' } },
+            { price: '€6,00 / €40,00', a: ['A'],
+              group: { id: 'bianchi', it: 'Bianchi Fermi', en: 'Still Whites', es: 'Blancos Tranquilos', fr: 'Blancs Tranquilles', de: 'Stille Weißweine', ru: 'Тихие белые' },
+              name: { it: 'Dorigatti Pinot Grigio', en: 'Dorigatti Pinot Grigio', es: 'Dorigatti Pinot Grigio', fr: 'Dorigatti Pinot Grigio', de: 'Dorigatti Pinot Grigio', ru: 'Доригатти Пино Гриджо' },
+              desc: { it: 'Pinot Grigio trentino, delicato e fruttato.', en: 'Pinot Grigio from Trentino, delicate and fruity.', es: 'Pinot Grigio del Trentino, delicado y afrutado.', fr: 'Pinot Grigio du Trentin, délicat et fruité.', de: 'Pinot Grigio aus dem Trentino, zart und fruchtig.', ru: 'Пино Гриджо из Трентино, деликатное и фруктовое.' } },
+            { price: '€5,00 / €32,00', a: ['A'],
+              group: { id: 'rossi', it: 'Rossi', en: 'Reds', es: 'Tintos', fr: 'Rouges', de: 'Rotweine', ru: 'Красные' },
+              name: { it: 'Valpolicella Classico Speri', en: 'Valpolicella Classico Speri', es: 'Valpolicella Classico Speri', fr: 'Valpolicella Classico Speri', de: 'Valpolicella Classico Speri', ru: 'Вальполичелла Классико Спери' },
+              desc: { it: 'Rosso veronese, leggero e fruttato.', en: 'Red from Verona, light and fruity.', es: 'Tinto veronés, ligero y afrutado.', fr: 'Rouge véronais, léger et fruité.', de: 'Rotwein aus Verona, leicht und fruchtig.', ru: 'Красное из Вероны, лёгкое и фруктовое.' } },
+            { price: '€6,00 / €40,00', a: ['A'],
+              group: { id: 'rossi', it: 'Rossi', en: 'Reds', es: 'Tintos', fr: 'Rouges', de: 'Rotweine', ru: 'Красные' },
+              name: { it: 'Valpolicella Superiore Speri', en: 'Valpolicella Superiore Speri', es: 'Valpolicella Superiore Speri', fr: 'Valpolicella Superiore Speri', de: 'Valpolicella Superiore Speri', ru: 'Вальполичелла Супериоре Спери' },
+              desc: { it: 'Rosso veronese, più strutturato e speziato.', en: 'Red from Verona, more structured and spicy.', es: 'Tinto veronés, más estructurado y especiado.', fr: 'Rouge véronais, plus structuré et épicé.', de: 'Rotwein aus Verona, strukturierter und würziger.', ru: 'Красное из Вероны, более структурное и пряное.' } }
+          ]
+        },
+        {
           id: 'gastronomia',
           name: { it: 'La Nostra Gastronomia', en: 'Our Delicatessen', es: 'Nuestra Charcutería', fr: 'Notre Épicerie Fine', de: 'Unsere Feinkost', ru: 'Наша гастрономия' },
           note: { it: 'Piccoli assaggi da gustare al banco o da asporto.', en: 'Small bites to enjoy at the counter or to go.', es: 'Pequeños bocados para disfrutar en el mostrador o para llevar.', fr: 'Petites bouchées à déguster au comptoir ou à emporter.', de: 'Kleine Häppchen für den Tresen oder zum Mitnehmen.', ru: 'Небольшие закуски у стойки или на вынос.' },
@@ -944,7 +1001,12 @@
       root.innerHTML = MENU.sections.map((section, i) => {
         const items = section.items.map((it, idx) => {
           const isLast = idx === section.items.length - 1;
+          const prevGroup = idx > 0 ? section.items[idx - 1].group : null;
+          const groupHeading = it.group && it.group.id !== (prevGroup && prevGroup.id)
+            ? `<li class="item-group"><h3 class="item-group__title">${it.group[currentLang]}</h3></li>`
+            : '';
           return `
+            ${groupHeading}
             <li class="item${isLast ? ' item--no-border' : ''}">
               <div class="item__head">
                 <h3 class="item__name">${it.name[currentLang]}</h3>
