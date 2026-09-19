@@ -366,7 +366,25 @@
     }
 
     /* MENU */
-    .menu { max-width: var(--container); margin: 0 auto; padding: 0 1.5rem 4rem; }
+    .menu { max-width: var(--container); margin: 0 auto; padding: calc(var(--nav-height) + 1rem) 1.5rem 4rem; }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0 0 1.5rem;
+      padding: 0.5rem 0;
+      background: none;
+      border: none;
+      color: var(--color-gold);
+      font-family: var(--font-sub);
+      font-style: italic;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: color 0.25s ease;
+    }
+    .back-btn:hover, .back-btn:focus-visible { color: var(--color-gold-bright); }
+    .back-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
     .section { padding: 0 0 0.5rem; scroll-margin-top: var(--nav-height); }
     .section + .section { margin-top: 2rem; }
     .section__header {
@@ -666,12 +684,16 @@
     </div>
   </header>
 
-  <section class="categories" aria-label="Esplora il menù">
+  <section class="categories" id="categoriesSection" aria-label="Esplora il menù">
     <h2 class="categories__title" id="categoriesTitle"></h2>
     <nav class="categories__grid" id="categoriesGrid"></nav>
   </section>
 
-  <main class="menu" id="menu">
+  <main class="menu" id="menu" hidden>
+    <button type="button" class="back-btn" id="backBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      <span id="backBtnLabel"></span>
+    </button>
     <p class="legend" id="legend" aria-label="Allergens"></p>
     <div id="sections"></div>
   </main>
@@ -724,12 +746,12 @@
     // UI STRINGS (per lingua)
     // ====================================================================
     const UI = {
-      it: { title: 'Ammiraglio Caffè — Menù', menuLabel: 'Apri menù', langLabel: 'Lingua', allergenLegend: 'Legenda allergeni', gluten: 'Glutine', milk: 'Latte', nuts: 'Frutta a guscio', alcohol: 'Alcol', social: 'Profili social', copyright: '© 2026 Ammiraglio Caffè — Tutti i diritti riservati', logoAlt: 'Stemma Ammiraglio Caffè', book: 'Prenota un tavolo', ctaTitle: 'Vuoi prenotare un tavolo?', ctaSub: 'Scrivici su WhatsApp.', ctaBtn: 'Prenota ora', hours: '07:00 – 00:00 — tutti i giorni', exploreTitle: 'Esplora il Menù' },
-      en: { title: 'Ammiraglio Caffè — Menu',  menuLabel: 'Open menu',  langLabel: 'Language', allergenLegend: 'Allergen legend', gluten: 'Gluten', milk: 'Milk', nuts: 'Tree nuts', alcohol: 'Alcohol', social: 'Social profiles', copyright: '© 2026 Ammiraglio Caffè — All rights reserved', logoAlt: 'Ammiraglio Caffè crest', book: 'Book a table', ctaTitle: 'Would you like to book a table?', ctaSub: 'Message us on WhatsApp.', ctaBtn: 'Book now', hours: '7:00 AM – Midnight — every day', exploreTitle: 'Explore the Menu' },
-      es: { title: 'Ammiraglio Caffè — Menú',  menuLabel: 'Abrir menú', langLabel: 'Idioma',  allergenLegend: 'Leyenda de alérgenos', gluten: 'Gluten', milk: 'Leche', nuts: 'Frutos secos', alcohol: 'Alcohol', social: 'Redes sociales', copyright: '© 2026 Ammiraglio Caffè — Todos los derechos reservados', logoAlt: 'Escudo Ammiraglio Caffè', book: 'Reservar mesa', ctaTitle: '¿Quieres reservar una mesa?', ctaSub: 'Escríbenos por WhatsApp.', ctaBtn: 'Reservar ahora', hours: '07:00 – 00:00 — todos los días', exploreTitle: 'Explora el Menú' },
-      fr: { title: 'Ammiraglio Caffè — Menu',  menuLabel: 'Ouvrir le menu', langLabel: 'Langue', allergenLegend: 'Légende des allergènes', gluten: 'Gluten', milk: 'Lait', nuts: 'Fruits à coque', alcohol: 'Alcool', social: 'Réseaux sociaux', copyright: '© 2026 Ammiraglio Caffè — Tous droits réservés', logoAlt: 'Emblème Ammiraglio Caffè', book: 'Réserver une table', ctaTitle: 'Vous souhaitez réserver une table\u202F?', ctaSub: 'Écrivez-nous sur WhatsApp.', ctaBtn: 'Réserver maintenant', hours: '7h00 – minuit — tous les jours', exploreTitle: 'Explorez le Menu' },
-      de: { title: 'Ammiraglio Caffè — Speisekarte', menuLabel: 'Menü öffnen', langLabel: 'Sprache', allergenLegend: 'Allergen-Legende', gluten: 'Gluten', milk: 'Milch', nuts: 'Schalenfrüchte', alcohol: 'Alkohol', social: 'Soziale Profile', copyright: '© 2026 Ammiraglio Caffè — Alle Rechte vorbehalten', logoAlt: 'Ammiraglio Caffè Wappen', book: 'Tisch reservieren', ctaTitle: 'Möchten Sie einen Tisch reservieren?', ctaSub: 'Schreiben Sie uns auf WhatsApp.', ctaBtn: 'Jetzt reservieren', hours: '07:00 – 24:00 — täglich', exploreTitle: 'Speisekarte entdecken' },
-      ru: { title: 'Ammiraglio Caffè — Меню', menuLabel: 'Открыть меню', langLabel: 'Язык', allergenLegend: 'Список аллергенов', gluten: 'Глютен', milk: 'Молоко', nuts: 'Орехи', alcohol: 'Алкоголь', social: 'Социальные сети', copyright: '© 2026 Ammiraglio Caffè — Все права защищены', logoAlt: 'Герб Ammiraglio Caffè', book: 'Забронировать столик', ctaTitle: 'Хотите забронировать столик?', ctaSub: 'Напишите нам в WhatsApp.', ctaBtn: 'Забронировать', hours: '07:00 – 00:00 — ежедневно', exploreTitle: 'Исследуйте меню' }
+      it: { title: 'Ammiraglio Caffè — Menù', menuLabel: 'Apri menù', langLabel: 'Lingua', allergenLegend: 'Legenda allergeni', gluten: 'Glutine', milk: 'Latte', nuts: 'Frutta a guscio', alcohol: 'Alcol', social: 'Profili social', copyright: '© 2026 Ammiraglio Caffè — Tutti i diritti riservati', logoAlt: 'Stemma Ammiraglio Caffè', book: 'Prenota un tavolo', ctaTitle: 'Vuoi prenotare un tavolo?', ctaSub: 'Scrivici su WhatsApp.', ctaBtn: 'Prenota ora', hours: '07:00 – 00:00 — tutti i giorni', exploreTitle: 'Esplora il Menù', back: 'Torna alle categorie' },
+      en: { title: 'Ammiraglio Caffè — Menu',  menuLabel: 'Open menu',  langLabel: 'Language', allergenLegend: 'Allergen legend', gluten: 'Gluten', milk: 'Milk', nuts: 'Tree nuts', alcohol: 'Alcohol', social: 'Social profiles', copyright: '© 2026 Ammiraglio Caffè — All rights reserved', logoAlt: 'Ammiraglio Caffè crest', book: 'Book a table', ctaTitle: 'Would you like to book a table?', ctaSub: 'Message us on WhatsApp.', ctaBtn: 'Book now', hours: '7:00 AM – Midnight — every day', exploreTitle: 'Explore the Menu', back: 'Back to categories' },
+      es: { title: 'Ammiraglio Caffè — Menú',  menuLabel: 'Abrir menú', langLabel: 'Idioma',  allergenLegend: 'Leyenda de alérgenos', gluten: 'Gluten', milk: 'Leche', nuts: 'Frutos secos', alcohol: 'Alcohol', social: 'Redes sociales', copyright: '© 2026 Ammiraglio Caffè — Todos los derechos reservados', logoAlt: 'Escudo Ammiraglio Caffè', book: 'Reservar mesa', ctaTitle: '¿Quieres reservar una mesa?', ctaSub: 'Escríbenos por WhatsApp.', ctaBtn: 'Reservar ahora', hours: '07:00 – 00:00 — todos los días', exploreTitle: 'Explora el Menú', back: 'Volver a las categorías' },
+      fr: { title: 'Ammiraglio Caffè — Menu',  menuLabel: 'Ouvrir le menu', langLabel: 'Langue', allergenLegend: 'Légende des allergènes', gluten: 'Gluten', milk: 'Lait', nuts: 'Fruits à coque', alcohol: 'Alcool', social: 'Réseaux sociaux', copyright: '© 2026 Ammiraglio Caffè — Tous droits réservés', logoAlt: 'Emblème Ammiraglio Caffè', book: 'Réserver une table', ctaTitle: 'Vous souhaitez réserver une table\u202F?', ctaSub: 'Écrivez-nous sur WhatsApp.', ctaBtn: 'Réserver maintenant', hours: '7h00 – minuit — tous les jours', exploreTitle: 'Explorez le Menu', back: 'Retour aux catégories' },
+      de: { title: 'Ammiraglio Caffè — Speisekarte', menuLabel: 'Menü öffnen', langLabel: 'Sprache', allergenLegend: 'Allergen-Legende', gluten: 'Gluten', milk: 'Milch', nuts: 'Schalenfrüchte', alcohol: 'Alkohol', social: 'Soziale Profile', copyright: '© 2026 Ammiraglio Caffè — Alle Rechte vorbehalten', logoAlt: 'Ammiraglio Caffè Wappen', book: 'Tisch reservieren', ctaTitle: 'Möchten Sie einen Tisch reservieren?', ctaSub: 'Schreiben Sie uns auf WhatsApp.', ctaBtn: 'Jetzt reservieren', hours: '07:00 – 24:00 — täglich', exploreTitle: 'Speisekarte entdecken', back: 'Zurück zu den Kategorien' },
+      ru: { title: 'Ammiraglio Caffè — Меню', menuLabel: 'Открыть меню', langLabel: 'Язык', allergenLegend: 'Список аллергенов', gluten: 'Глютен', milk: 'Молоко', nuts: 'Орехи', alcohol: 'Алкоголь', social: 'Социальные сети', copyright: '© 2026 Ammiraglio Caffè — Все права защищены', logoAlt: 'Герб Ammiraglio Caffè', book: 'Забронировать столик', ctaTitle: 'Хотите забронировать столик?', ctaSub: 'Напишите нам в WhatsApp.', ctaBtn: 'Забронировать', hours: '07:00 – 00:00 — ежедневно', exploreTitle: 'Исследуйте меню', back: 'Назад к категориям' }
     };
 
     // ====================================================================
@@ -1163,6 +1185,7 @@
     // ====================================================================
     const STORAGE_KEY = 'ammiraglio.lang';
     let currentLang = 'it';
+    let activeSection = null;
 
     function getInitialLang() {
       try {
@@ -1210,7 +1233,12 @@
       list.innerHTML = sections + book;
 
       list.querySelectorAll('.nav__link').forEach((link) => {
-        link.addEventListener('click', () => {
+        link.addEventListener('click', (e) => {
+          const href = link.getAttribute('href');
+          if (href && href.startsWith('#')) {
+            e.preventDefault();
+            showSection(href.slice(1));
+          }
           if (list.classList.contains('is-open')) {
             list.classList.remove('is-open');
             const tg = document.getElementById('navToggle');
@@ -1228,6 +1256,12 @@
       grid.innerHTML = MENU.sections.map((s) => `
         <a class="category-card" href="#${s.id}">${s.name[currentLang]}</a>
       `).join('');
+      grid.querySelectorAll('.category-card').forEach((card) => {
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          showSection(card.getAttribute('href').slice(1));
+        });
+      });
     }
 
     function renderLegend() {
@@ -1333,6 +1367,45 @@
       // Footer hours
       const fh = document.getElementById('footerHours');
       if (fh) fh.textContent = t.hours;
+      document.getElementById('backBtnLabel').textContent = t.back;
+      document.getElementById('backBtn').setAttribute('aria-label', t.back);
+    }
+
+    // ====================================================================
+    // VIEW NAVIGATION — home (category cards) vs single category
+    // ====================================================================
+    function showCategories(scroll, updateHistory) {
+      activeSection = null;
+      document.getElementById('categoriesSection').hidden = false;
+      document.querySelector('.hero').style.display = '';
+      document.getElementById('menu').hidden = true;
+      if (updateHistory !== false && history.pushState) {
+        history.pushState('', document.title, window.location.pathname + window.location.search);
+      }
+      if (scroll !== false) window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+
+    function showSection(id, scroll, updateHistory) {
+      if (!MENU.sections.some((s) => s.id === id)) return;
+      activeSection = id;
+      document.getElementById('categoriesSection').hidden = true;
+      document.querySelector('.hero').style.display = 'none';
+      const menuEl = document.getElementById('menu');
+      menuEl.hidden = false;
+      menuEl.querySelectorAll('.divider').forEach((d) => { d.style.display = 'none'; });
+      menuEl.querySelectorAll('.section').forEach((s) => { s.hidden = s.id !== id; });
+      if (updateHistory !== false && history.pushState) history.pushState(null, '', '#' + id);
+      if (scroll !== false) window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+      // The section starts hidden, so the scroll-reveal IntersectionObserver
+      // never sees it enter the viewport — reveal it directly instead.
+      const activeEl = document.getElementById(id);
+      if (activeEl) {
+        activeEl.querySelector('.section__header')?.classList.add('is-visible');
+        activeEl.querySelectorAll('.item').forEach((item, i) => {
+          setTimeout(() => item.classList.add('is-poured'), (i % 4) * 90);
+        });
+      }
     }
 
     // ====================================================================
@@ -1348,6 +1421,7 @@
       renderCategories();
       renderLegend();
       renderSections();
+      if (activeSection) { showSection(activeSection, false, false); } else { showCategories(false, false); }
     }
 
     // ====================================================================
@@ -1361,6 +1435,39 @@
       renderCategories();
       renderLegend();
       renderSections();
+
+      // Play the hero fade-in once, then lock the final state so toggling
+      // .hero visibility (home <-> category view) doesn't replay it.
+      document.querySelectorAll('.hero__logo, .hero__cta').forEach((el) => {
+        el.addEventListener('animationend', () => {
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+          el.style.animation = 'none';
+        }, { once: true });
+      });
+
+      // Home vs single-category view
+      const initialId = location.hash ? location.hash.slice(1) : '';
+      if (initialId && MENU.sections.some((s) => s.id === initialId)) {
+        showSection(initialId, true, false);
+        // The browser's native "scroll to #hash" can fire after our own
+        // scroll (around the load event), landing past the back button.
+        // Re-assert the top scroll once loading has fully settled.
+        window.addEventListener('load', () => window.scrollTo({ top: 0, left: 0, behavior: 'instant' }));
+      } else {
+        showCategories(true, false);
+      }
+      document.getElementById('backBtn').addEventListener('click', () => showCategories());
+
+      // Browser back/forward between home and a category view
+      window.addEventListener('popstate', () => {
+        const id = location.hash ? location.hash.slice(1) : '';
+        if (id && MENU.sections.some((s) => s.id === id)) {
+          showSection(id, true, false);
+        } else {
+          showCategories(true, false);
+        }
+      });
 
       // Nav scroll
       const nav = document.getElementById('nav');
